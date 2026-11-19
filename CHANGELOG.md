@@ -1,3 +1,9 @@
+## v2.7.2 (2026-11-19)
+- Synchronize the six implemented slash commands with Telegram on startup using the application post-initialization hook.
+- Update both the default and private-chat command menus, replacing stale BotFather entries such as `/id`.
+- Do not block bot startup if the Telegram command-menu API is temporarily unavailable; log a warning.
+- Add offline regression coverage for command registration and menu synchronization.
+
 ## v2.7.1 (2026-11-19)
 - Fixed missing `/accounts` Telegram command; now opens the same interactive account-management screen as the Accounts button.
 - Added `/about` Telegram command and a unified About screen containing developer `Net-spoof`, repository and Telegram channel links.

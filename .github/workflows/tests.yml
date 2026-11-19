@@ -19,3 +19,4 @@ jobs:
           python test_v26.py
           python test_v27.py
           python test_v271.py
+          python test_v272.py

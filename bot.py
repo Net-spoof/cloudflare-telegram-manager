@@ -15,7 +15,13 @@ from typing import Any
 import httpx
 from cryptography.fernet import Fernet, InvalidToken
 from dotenv import load_dotenv
-from telegram import InlineKeyboardButton as TelegramInlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram import (
+    BotCommand,
+    BotCommandScopeAllPrivateChats,
+    InlineKeyboardButton as TelegramInlineKeyboardButton,
+    InlineKeyboardMarkup,
+    Update,
+)
 from telegram.constants import ParseMode
 from telegram.error import BadRequest
 from telegram.ext import (
@@ -36,7 +42,7 @@ DB_PATH = DATA_DIR / "bot.db"
 FERNET = Fernet(os.environ["ENCRYPTION_KEY"].strip().encode())
 CF_API = "https://api.cloudflare.com/client/v4"
 PAGE_SIZE = 8
-VERSION = "2.7.1"
+VERSION = "2.7.2"
 
 # Telegram inline keyboard callback_data is limited to 64 UTF-8 bytes.
 # Cloudflare zone/record IDs are 32-character hex strings. Reversible binary
@@ -1230,10 +1236,36 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
     log.exception("Unhandled exception", exc_info=context.error)
 
 
+# Keep the command menu in Telegram aligned with CommandHandler registrations.
+# Old /id entries configured in BotFather are replaced on the next successful startup.
+BOT_COMMAND_MENU = (
+    ("start", "🏠 منوی اصلی"),
+    ("menu", "📋 نمایش منوی اصلی"),
+    ("accounts", "👤 مدیریت حساب‌های Cloudflare"),
+    ("about", "ℹ️ درباره ربات و سازنده"),
+    ("help", "📖 راهنمای استفاده از ربات"),
+    ("cancel", "❌ لغو عملیات جاری"),
+)
+
+
+async def publish_bot_commands(application: Application):
+    """Publish slash commands in the default and private-chat Telegram menus."""
+    commands = [BotCommand(command=name, description=description)
+                for name, description in BOT_COMMAND_MENU]
+    for scope in (None, BotCommandScopeAllPrivateChats()):
+        try:
+            await application.bot.set_my_commands(commands, scope=scope)
+        except Exception as exc:
+            # A temporary Telegram API failure should not prevent the bot from running.
+            label = "default" if scope is None else "all_private_chats"
+            log.warning("Unable to refresh Telegram commands for %s: %s",
+                        label, type(exc).__name__)
+
+
 def main():
     if not ADMIN_IDS: raise SystemExit("TELEGRAM_ADMIN_IDS is empty")
     init_db()
-    app=Application.builder().token(BOT_TOKEN).build()
+    app=Application.builder().token(BOT_TOKEN).post_init(publish_bot_commands).build()
     app.add_handler(CommandHandler("start",start))
     app.add_handler(CommandHandler("menu",start))
     app.add_handler(CommandHandler("accounts",accounts_command))

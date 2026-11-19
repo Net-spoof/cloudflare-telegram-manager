@@ -2,7 +2,7 @@
 
 # Cloudflare Telegram Manager — Installation & Operations
 
-**Version 2.7.1** · Self-hosted · Docker Compose · Administrator-only
+**Version 2.7.2** · Self-hosted · Docker Compose · Administrator-only
 
 [🇮🇷 راهنمای فارسی](README_FA.md) · [🏠 Project README](README.md) · [Changelog](CHANGELOG.md)
 
@@ -139,6 +139,8 @@ A <code>403</code> response generally indicates missing or incorrectly scoped pe
 | <code>/help</code> | Display help |
 | <code>/cancel</code> | Cancel the current input flow |
 
+The slash-command list is synchronized with Telegram on bot startup. An obsolete `/id` entry configured previously through BotFather is replaced in the default and private-chat menus. This release does not implement `/id`.
+
 ### Service operations
 
 ~~~bash
@@ -223,6 +225,7 @@ python3 test_v25.py
 python3 test_v26.py
 python3 test_v27.py
 python3 test_v271.py
+python3 test_v272.py
 ~~~
 
 These tests validate local behavior without requiring real Telegram or Cloudflare credentials. For operational confidence, perform a low-risk connection and zone-list test against an account you control.

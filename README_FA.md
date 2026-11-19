@@ -3,7 +3,7 @@
 <div dir="rtl" align="right">
 
 <h1>☁️ راهنمای نصب و راه‌اندازی Cloudflare Telegram Manager</h1>
-<p><strong>Cloudflare Telegram Manager — نسخه ۲.۷.۱</strong></p>
+<p><strong>Cloudflare Telegram Manager — نسخه ۲.۷.۲</strong></p>
 <p>مرجع کامل نصب روی سرور، ساخت ربات تلگرام، اتصال امن حساب Cloudflare، راهبری سرویس، به‌روزرسانی و رفع خطاهای متداول.</p>
 <p>🌐 <a href="README_EN.md">English documentation</a> | 🏠 <a href="README.md">صفحه اصلی پروژه</a></p>
 
@@ -135,6 +135,9 @@ sudo bash diagnose.sh
 <li><code>/help</code> — نمایش راهنمای ربات</li>
 <li><code>/cancel</code> — لغو مرحله فعلی</li>
 </ul>
+<p>فهرست دستورهای منوی تلگرام هنگام راه‌اندازی ربات با همین دستورها هماهنگ می‌شود. پس از به‌روزرسانی و راه‌اندازی مجدد، فرمان قدیمی <code>/id</code> از منوی پیش‌فرض حذف می‌شود؛ این نسخه فرمان <code>/id</code> ندارد.</p>
+<ul>
+</ul>
 <p>مدیریت سرویس از طریق SSH:</p>
 </div>
 
@@ -213,6 +216,7 @@ python3 test_v25.py
 python3 test_v26.py
 python3 test_v27.py
 python3 test_v271.py
+python3 test_v272.py
 ~~~
 
 <div dir="rtl" align="right">
