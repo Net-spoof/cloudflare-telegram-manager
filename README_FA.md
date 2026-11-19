@@ -1,144 +1,217 @@
-# ☁️ Cloudflare Telegram Manager — نسخه 2.7.0
+<a id="top"></a>
+<div dir="rtl" align="right">
 
-ربات تلگرام فارسی برای مدیریت چند حساب Cloudflare، دامنه‌ها و DNS؛ با راهنمای قدم‌به‌قدم اتصال، منوهای مرتب، محافظت از عملیات حساس و نصب Docker.
+<h1>☁️ راهنمای کامل نصب و راه‌اندازی ربات مدیریت Cloudflare</h1>
+<p><strong>Cloudflare Telegram Manager — نسخه ۲.۷.۰</strong></p>
+<p>راهنمای فارسی، مرحله‌به‌مرحله و راست‌چین برای نصب روی VPS، ساخت ربات تلگرام، اتصال ایمن حساب Cloudflare، مدیریت سرویس، ارتقا و رفع خطا.</p>
+<p>🌐 <a href="README_EN.md">English documentation</a> | 🏠 <a href="README.md">صفحه اصلی پروژه</a></p>
 
-> **این پروژه مستقل و غیررسمی است** و وابستگی یا تأییدیه‌ای از Cloudflare ندارد.
->
-> 🔐 **قبل از انتشار یا نصب:** هیچ‌وقت فایل‌های `.env`، پوشه‌های `data/` و `backups/`، Token ربات تلگرام، کلید رمزنگاری یا API Token را روی GitHub قرار ندهید.
+<blockquote><strong>توجه:</strong> این پروژه مستقل و غیررسمی است. برای مدیریت حساب‌های خودتان از آن استفاده کنید. فایل‌های دارای رمز و توکن را در مخزن عمومی یا کانال تلگرام منتشر نکنید.</blockquote>
 
-## ✨ ویژگی‌ها
+<h2>📚 فهرست راهنما</h2>
+<ul>
+<li><a href="#features">امکانات</a></li>
+<li><a href="#requirements">پیش‌نیازهای سرور</a></li>
+<li><a href="#botfather">ساخت ربات و دریافت شناسه مدیر</a></li>
+<li><a href="#install">نصب کامل و راه‌اندازی با Docker</a></li>
+<li><a href="#cloudflare">ساخت API Token و اتصال حساب Cloudflare</a></li>
+<li><a href="#commands">دستورات ربات و مدیریت سرویس</a></li>
+<li><a href="#upgrade">آپدیت، بکاپ و نگهداری اطلاعات</a></li>
+<li><a href="#troubleshooting">خطاهای رایج و راهکارها</a></li>
+<li><a href="#security">نکات امنیتی</a></li>
+</ul>
 
-- 📂 چند حساب Cloudflare؛ نمایش حساب فعال، تغییر حساب، تست اتصال، تعویض توکن، قطع اتصال امن.
-- 🌐 مشاهده دامنه‌ها با صفحه‌بندی؛ مشاهده وضعیت Zone و پلن.
-- 🧩 مشاهده، ساخت، ویرایش، جستجو و حذف رکوردهای DNS، شامل ۲۱ نوع پشتیبانی‌شده در پروژه.
-- 🔎 جستجو در رکوردهای یک دامنه یا دامنه‌های قابل‌دسترسی حساب فعال.
-- 🛡️ مدیریت برخی تنظیمات TLS، HTTPS، HTTP/3، WebSocket، IPv6 و Brotli بر اساس مجوز توکن.
-- 🧹 پاک‌سازی کش دامنه یا یک URL؛ با تأیید قبل از پاک‌سازی کامل.
-- 🔐 مشاهده و تغییر DNSSEC با تأیید دوباره؛ هشدار درباره هماهنگی DS با رجیسترار.
-- 📥 ورود فایل BIND و 📤 دریافت خروجی رکوردها.
-- 📖 آموزش مرحله‌به‌مرحله ساخت توکن، یافتن Account ID و رفع خطاهای رایج **داخل خود ربات**.
-- 🔒 دسترسی فقط برای شناسه مدیر؛ دریافت توکن در گفت‌وگوی خصوصی، حذف پیام توکن تا حد امکان، رمزنگاری توکن‌ها با Fernet، جلوگیری از ورود فایل BIND بزرگ‌تر از ۲MB.
-- 🔁 حفظ راه‌حل خطاهای `Button_data_invalid` و `Message is not modified`.
+<a id="features"></a>
+<h2>✨ امکانات پروژه</h2>
+<ul>
+<li>مدیریت چند حساب Cloudflare، تغییر حساب فعال و آزمایش اتصال API.</li>
+<li>نمایش دامنه‌ها و رکوردهای DNS با صفحه‌بندی؛ ساخت، ویرایش، حذف و جستجوی رکوردها.</li>
+<li>ورود فایل BIND و دریافت خروجی DNS؛ پشتیبانی از ۲۱ نوع رکورد تعریف‌شده در پروژه.</li>
+<li>مدیریت برخی تنظیمات SSL/TLS و شبکه، پاک‌سازی کش و مدیریت DNSSEC با تأیید عملیات حساس.</li>
+<li>ذخیره‌سازی رمزنگاری‌شده توکن‌ها با Fernet، محدودسازی دسترسی با شناسه عددی مدیر و دریافت توکن فقط در چت خصوصی.</li>
+<li>منوی فارسی و آموزش داخلی برای اتصال حساب و رفع خطاهای متداول.</li>
+</ul>
 
-## 🧭 ساختار منوهای تلگرام
+<a id="requirements"></a>
+<h2>🖥️ ۱. پیش‌نیازهای سرور</h2>
+<ul>
+<li>یک VPS لینوکسی با دسترسی <code>root</code> یا <code>sudo</code>؛ برای نصب خودکار، <strong>Ubuntu</strong> پیشنهاد می‌شود.</li>
+<li>اینترنت خروجی به GitHub، رجیستری Docker، <code>api.telegram.org</code> و <code>api.cloudflare.com</code>.</li>
+<li>نصب <code>git</code> و <code>python3</code>؛ نصاب در صورت نیاز تلاش می‌کند Docker و Compose را نصب کند.</li>
+<li>توکن ربات تلگرام، شناسه عددی مدیر و یک حساب Cloudflare دارای دامنه.</li>
+</ul>
+<p>ربات از <strong>Long Polling</strong> استفاده می‌کند؛ برای عملکرد عادی آن <strong>نیازی به دامنه، SSL یا بازکردن پورت ورودی نیست</strong>. دسترسی HTTPS خروجی لازم است.</p>
+<p>اگر Docker را از قبل نصب کرده‌اید، نسخه و سرویس آن را بررسی کنید:</p>
+</div>
 
-```text
-☁️ صفحه اصلی
-├── 🌐 مدیریت دامنه‌ها ────┬── 🧩 رکوردهای DNS
-│                         ├── 🔎 جستجوی رکورد
-│                         ├── 🛡️ امنیت و SSL
-│                         ├── 🧹 مدیریت کش
-│                         ├── 🔐 DNSSEC
-│                         ├── 📤 خروجی / 📥 ورود DNS
-│                         └── ℹ️ جزئیات / ⏸ توقف موقت
-├── 🔎 جستجوی DNS
-├── 👤 حساب‌های Cloudflare ┬── 🧪 تست اتصال
-│                         ├── 🔑 تعویض توکن
-│                         ├── ✅ انتخاب حساب فعال
-│                         └── 🗑 قطع اتصال
-├── 📖 راهنمای اتصال ─────┬── ۱. ساخت API Token
-│                         ├── ۲. یافتن Account ID
-│                         ├── ۳. اتصال در ربات
-│                         └── 🛠 رفع خطا
-└── ℹ️ درباره ربات
-```
+~~~bash
+docker --version
+docker compose version
+sudo systemctl status docker --no-pager
+~~~
 
-## 🔗 اتصال حساب Cloudflare
+<div dir="rtl" align="right">
+<a id="botfather"></a>
+<h2>🤖 ۲. ساخت ربات تلگرام و دریافت شناسه مدیر</h2>
+<ol>
+<li>در تلگرام وارد <a href="https://t.me/BotFather">@BotFather</a> شوید.</li>
+<li>دستور <code>/newbot</code> را بفرستید و نام نمایشی و نام کاربری منتهی به <code>bot</code> انتخاب کنید.</li>
+<li><strong>Bot Token</strong> ارائه‌شده را در جای امن نگه دارید. آن را در GitHub، اسکرین‌شات یا گروه ارسال نکنید.</li>
+<li>شناسه <strong>عددی</strong> حساب تلگرام مدیر (<code>Telegram User ID</code>) را از روشی مطمئن پیدا کنید؛ این مقدار با <code>@username</code> تفاوت دارد.</li>
+<li>اگر چند مدیر دارید، شناسه‌ها را با کامای انگلیسی جدا کنید؛ نمونه: <code>123456789,987654321</code>.</li>
+</ol>
+<p><strong>نکته:</strong> ربات فقط به شناسه‌هایی که در <code>TELEGRAM_ADMIN_IDS</code> تعریف می‌شوند پاسخ می‌دهد.</p>
 
-### ۱. ساخت API Token
+<a id="install"></a>
+<h2>🐳 ۳. نصب کامل روی Ubuntu</h2>
+<p>با SSH به سرور متصل شوید. دستورهای زیر ابزارهای اولیه را نصب و پروژه را در <code>/opt/cloudflare-telegram-manager</code> دریافت می‌کنند:</p>
+</div>
 
-1. وارد [داشبورد Cloudflare](https://dash.cloudflare.com/) شوید.
-2. قسمت **My Profile → API Tokens** را باز کنید: https://dash.cloudflare.com/profile/api-tokens
-3. روی **Create Token** بزنید و **Edit zone DNS** یا **Custom Token** را انتخاب کنید.
-4. برای مشاهده دامنه‌ها، دسترسی **Zone → Zone → Read** و برای مدیریت DNS دسترسی **Zone → DNS → Edit** را بررسی کنید. قالب پیش‌فرض لزوماً همه امکانات ربات را پوشش نمی‌دهد.
-5. برای قابلیت‌های دیگر مجوز لازم را جداگانه بدهید؛ برای مثال **Zone Settings Edit** و **Cache Purge**. برای مدیریت وضعیت Zone نیز سطح دسترسی مناسب Zone لازم است. مجوزهای در دسترس بسته به نوع توکن و تنظیمات حساب ممکن است فرق کنند.
-6. در **Zone Resources** فقط دامنه‌های موردنیاز را انتخاب کنید. برای امنیت، به توکن دسترسی گسترده‌تر از نیاز ندهید.
-7. توکن ساخته‌شده را یک‌بار کپی کنید. **Global API Key مناسب این جریان نیست.**
-
-مستندات رسمی: [ساخت توکن](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/) و [مجوزها](https://developers.cloudflare.com/fundamentals/api/reference/permissions/).
-
-### ۲. پیدا کردن Account ID
-
-از داشبورد Cloudflare حساب حاوی دامنه‌ها را باز کنید و **Account ID** همان حساب را کپی کنید. Account ID با **Zone ID** فرق دارد؛ معمولاً یک رشته ۳۲ کاراکتری هگزادسیمال است.
-
-### ۳. ثبت حساب در ربات
-
-1. در **گفت‌وگوی خصوصی** ربات `/start` را بفرستید.
-2. بخش «👤 حساب‌های Cloudflare → ➕ افزودن حساب جدید» را باز کنید.
-3. نام دلخواه، Account ID و **فقط مقدار خام API Token** را به ترتیب وارد کنید.
-4. ربات توکن را با درخواست خواندنی Cloudflare می‌آزماید؛ در صورت موفقیت حساب را به‌صورت رمزنگاری‌شده ثبت می‌کند.
-5. برای بررسی دوباره «👤 حساب‌ها → حساب موردنظر → 🧪 تست اتصال» را انتخاب کنید.
-
-**نکته:** اگر با `403` مواجه شدید، علاوه بر اعتبار توکن باید محدوده Zone و مجوزها را بررسی کنید. اگر `6003` / `6111` دیدید، توکن را مجدداً از Cloudflare کپی کنید و در صورت لزوم توکن تازه بسازید. ربات مقدار `Bearer` را خودش به هدر اضافه می‌کند.
-
-## 🐳 نصب / به‌روزرسانی روی Ubuntu با Docker
-
-نصب اولیه از مسیر پوشه پروژه:
-
-```bash
-cd /root/cloudflare-telegram-manager
+~~~bash
+sudo apt-get update
+sudo apt-get install -y git python3 ca-certificates
+sudo git clone https://github.com/Net-spoof/cloudflare-telegram-manager.git /opt/cloudflare-telegram-manager
+cd /opt/cloudflare-telegram-manager
 sudo bash install.sh
-```
+~~~
 
-اسکریپت نصب، در اولین اجرا Token ربات تلگرام و شناسه عددی مدیر را می‌پرسد و کلید رمزنگاری را تولید می‌کند. برای به‌روزرسانی، ابتدا فایل ZIP جدید را **در مسیر فعلی** Extract کنید و دوباره `sudo bash install.sh` اجرا کنید.
+<div dir="rtl" align="right">
+<p>در نصب اولیه، نصاب دو مقدار درخواست می‌کند:</p>
+<ol>
+<li><code>Telegram Bot Token</code>: توکن دریافتی از BotFather؛ هنگام ورود به‌صورت مخفی دریافت می‌شود.</li>
+<li><code>Telegram Admin numeric ID(s)</code>: شناسه عددی مدیر یا چند مدیر (جداشده با کاما).</li>
+</ol>
+<p>سپس نصاب کلید رمزنگاری را تولید می‌کند، فایل خصوصی <code>.env</code> می‌سازد، دسترسی پوشه داده را تنظیم می‌کند، ایمیج Docker را می‌سازد و سرویس را اجرا می‌کند.</p>
+<p>برای بررسی وضعیت، دستورهای زیر را اجرا کنید:</p>
+</div>
 
-**نسخه‌های 2.5 و 2.6:** همین نصاب `.env` و `data/bot.db` را نگه می‌دارد و پیش از نصب بکاپ می‌سازد. **کلید `ENCRYPTION_KEY` قدیمی را عوض نکنید**؛ در غیر این صورت توکن‌های ذخیره‌شده قابل رمزگشایی نخواهند بود.
+~~~bash
+cd /opt/cloudflare-telegram-manager
+sudo docker compose ps
+sudo bash diagnose.sh
+~~~
 
-بررسی وضعیت:
+<div dir="rtl" align="right">
+<p>در خروجی <code>docker compose ps</code> کانتینر <code>cloudflare_telegram_manager</code> باید در وضعیت <code>running</code> یا <code>Up</code> باشد. <code>diagnose.sh</code> وضعیت تنظیمات، دیتابیس، رمزگشایی و ارتباط تلگرام را بدون چاپ مقدار توکن بررسی می‌کند.</p>
+<p>اگر نسخه قدیمی Compose دارید که از دستور <code>docker compose</code> پشتیبانی نمی‌کند، در دستورهای مدیریتی از <code>docker-compose</code> استفاده کنید.</p>
+<p>حالا در گفت‌وگوی <strong>خصوصی</strong> ربات، دستور <code>/start</code> را ارسال کنید.</p>
 
-```bash
-cd /root/cloudflare-telegram-manager
-docker compose ps
-bash diagnose.sh
-```
+<a id="cloudflare"></a>
+<h2>☁️ ۴. اتصال حساب Cloudflare</h2>
+<h3>مرحله اول: ساخت API Token محدود</h3>
+<ol>
+<li>وارد <a href="https://dash.cloudflare.com/">Cloudflare Dashboard</a> شوید.</li>
+<li>صفحه <a href="https://dash.cloudflare.com/profile/api-tokens">My Profile → API Tokens</a> را باز کنید.</li>
+<li><strong>Create Token</strong> را انتخاب کنید. قالب <strong>Edit zone DNS</strong> نقطه شروع مناسبی است؛ برای مجوزهای دقیق‌تر می‌توانید <strong>Custom Token</strong> بسازید.</li>
+<li>برای مشاهده دامنه‌ها، مجوز <strong>Zone → Zone → Read</strong> و برای مدیریت رکوردها <strong>Zone → DNS → Edit</strong> را مطابق امکانات موردنیاز تنظیم کنید.</li>
+<li>برای قابلیت‌های دیگر، مانند Zone Settings، Cache Purge یا DNSSEC، <strong>فقط مجوز مرتبط</strong> را اضافه کنید؛ بسته به نوع توکن و سطح دسترسی حساب، گزینه‌ها متفاوت‌اند.</li>
+<li>در <strong>Zone Resources</strong> دسترسی را تا جای ممکن به همان دامنه‌های موردنظر محدود کنید.</li>
+<li>توکن را بسازید و <strong>فقط مقدار خام API Token</strong> را کپی کنید؛ از Global API Key استفاده نکنید.</li>
+</ol>
+<p>منابع رسمی: <a href="https://developers.cloudflare.com/fundamentals/api/get-started/create-token/">راهنمای ساخت توکن</a> و <a href="https://developers.cloudflare.com/fundamentals/api/reference/permissions/">فهرست مجوزها</a>.</p>
 
-در صورت استفاده از Compose قدیمی، `docker-compose` را جایگزین `docker compose` کنید.
+<h3>مرحله دوم: یافتن Account ID</h3>
+<p>در داشبورد Cloudflare، حساب مربوط به دامنه‌ها را انتخاب کرده و <strong>Account ID</strong> همان حساب را کپی کنید. <strong>Account ID با Zone ID فرق دارد.</strong> ربات انتظار شناسه ۳۲ کاراکتری هگزادسیمال دارد.</p>
 
-## 🧪 آزمون آفلاین
+<h3>مرحله سوم: ثبت حساب داخل ربات</h3>
+<ol>
+<li>در پیوی ربات <code>/start</code> بزنید.</li>
+<li>به <strong>👤 حساب‌های Cloudflare ← ➕ افزودن حساب جدید</strong> بروید.</li>
+<li>یک نام دلخواه برای حساب وارد کنید.</li>
+<li><strong>Account ID</strong> و سپس <strong>API Token</strong> را به ترتیب ارسال کنید.</li>
+<li>هنگام درخواست توکن، پیشوند <code>Bearer</code>، کوتیشن یا متن اضافی وارد نکنید؛ خود ربات هدر Authorization را می‌سازد.</li>
+<li>پس از اتصال، از صفحه حساب گزینه <strong>🧪 تست اتصال</strong> را بزنید و دامنه‌ها را بررسی کنید.</li>
+</ol>
+<p>در صورت دریافت خطای <code>403</code>، قبل از هر چیز محدوده Zone Resources و مجوزهای توکن را بررسی کنید. همه امکانات ربات با یک توکن صرفاً DNS قابل استفاده نیستند.</p>
 
-بدون اتصال به Cloudflare یا تلگرام و بدون نیاز به توکن معتبر:
+<a id="commands"></a>
+<h2>🎛️ ۵. دستورات و مدیریت روزمره</h2>
+<ul>
+<li><code>/start</code> — بازکردن منوی اصلی</li>
+<li><code>/menu</code> — بازگشت به منوی اصلی</li>
+<li><code>/help</code> — نمایش راهنمای ربات</li>
+<li><code>/cancel</code> — لغو مرحله فعلی</li>
+</ul>
+<p>مدیریت سرویس از طریق SSH:</p>
+</div>
 
-```bash
+~~~bash
+cd /opt/cloudflare-telegram-manager
+
+# Status
+sudo docker compose ps
+
+# Restart
+sudo docker compose restart cloudflare-bot
+
+# Stop
+sudo docker compose stop
+
+# Start again
+sudo docker compose up -d
+
+# Sanitized diagnostic
+sudo bash diagnose.sh
+~~~
+
+<div dir="rtl" align="right">
+<p>برای اشتراک‌گذاری خطاها، <strong>گزارش تشخیصی پاک‌سازی‌شده</strong> را ترجیح دهید؛ لاگ کامل ممکن است حاوی داده‌های حساس باشد.</p>
+
+<a id="upgrade"></a>
+<h2>🔄 ۶. به‌روزرسانی، بکاپ و نگهداری داده‌ها</h2>
+<h3>آپدیت نصب GitHub</h3>
+<p>اگر پروژه را با Git نصب کرده‌اید، از همان مسیر فعلی به‌روزرسانی کنید:</p>
+</div>
+
+~~~bash
+cd /opt/cloudflare-telegram-manager
+sudo git pull --ff-only
+sudo bash install.sh
+sudo docker compose ps
+~~~
+
+<div dir="rtl" align="right">
+<p><strong>مهم:</strong> نصاب قبل از اجرای به‌روزرسانی، از <code>.env</code> و دیتابیس <code>data/bot.db</code> (در صورت وجود) داخل <code>backups/</code> بکاپ می‌گیرد. فایل <code>.env</code>، کلید <code>ENCRYPTION_KEY</code> و داده‌های قبلی را حفظ می‌کند. <strong>کلید قدیمی را عوض نکنید</strong>؛ با عوض‌شدن آن توکن‌های رمزنگاری‌شده قبلی قابل خواندن نخواهند بود.</p>
+<h3>اگر نسخه قبلی را با ZIP نصب کرده‌اید</h3>
+<p>در همان پوشه نصب قبلی کار کنید؛ ابتدا از <code>.env</code> و <code>data/</code> نسخه پشتیبان بگیرید. سپس سورس جدید را <strong>بدون جایگزین‌کردن این دو مسیر</strong> منتقل کنید و <code>sudo bash install.sh</code> را اجرا کنید. کلون‌کردن پروژه در پوشه تازه، حساب‌های نسخه قبلی را خودکار جابه‌جا نمی‌کند.</p>
+<p>بکاپ‌ها شامل رمزها و داده‌های حساس هستند؛ آن‌ها را با دسترسی محدود و خارج از GitHub نگه دارید. برای بازیابی، از روی یک بکاپ سالم، فایل <code>.env</code> و دیتابیس را به مسیر نصب برگردانید، سپس نصاب را اجرا کنید تا مالکیت و مجوزهای لازم اصلاح شوند.</p>
+
+<a id="troubleshooting"></a>
+<h2>🛠️ ۷. عیب‌یابی و خطاهای رایج</h2>
+<ul>
+<li><strong>ربات پاسخ نمی‌دهد:</strong> کانتینر، اتصال خروجی به تلگرام، Bot Token و شناسه عددی مدیر را بررسی کنید؛ سپس <code>sudo bash diagnose.sh</code> را اجرا کنید.</li>
+<li><strong>خطای <code>6003</code> یا <code>6111</code>:</strong> معمولاً مشکل فرمت یا اعتبار هدر Authorization است. API Token خام را بدون Bearer و فاصله اضافی وارد کنید؛ در صورت لزوم یک توکن جدید بسازید.</li>
+<li><strong>خطای <code>403</code>:</strong> مجوزها، Zone Resources، محدودیت IP و تاریخ انقضای توکن را بررسی کنید.</li>
+<li><strong>خطای <code>404</code> یا خالی بودن فهرست دامنه‌ها:</strong> درستی Account ID، مجوز Zone Read و دامنه‌های قابل‌دسترسی را بررسی کنید.</li>
+<li><strong>خطای <code>Button_data_invalid</code>:</strong> نسخه ۲.۶ به بعد کدگذاری شناسه‌های طولانی را اصلاح می‌کند؛ مطمئن شوید کانتینر با سورس جدید ساخته شده است.</li>
+<li><strong>خطای <code>Message is not modified</code>:</strong> فشردن دوباره دکمه نباید خطای قابل‌مشاهده ایجاد کند؛ در صورت تکرار، نسخه نصب‌شده را بررسی کنید.</li>
+<li><strong>عدم امکان رمزگشایی حساب:</strong> کلید اصلی <code>ENCRYPTION_KEY</code> را از بکاپ بازیابی کنید؛ دیتابیس را پاک نکنید.</li>
+<li><strong>خطای Permission در SQLite:</strong> نصاب مجوز پوشه <code>data/</code> را برای UID کانتینر <code>10001</code> اصلاح می‌کند؛ دوباره نصاب را اجرا کنید.</li>
+<li><strong>خطای Docker Compose:</strong> وجود Docker Engine/Compose و دسترسی سرور به رجیستری ایمیج‌ها را بررسی کنید؛ <a href="https://docs.docker.com/engine/install/ubuntu/">مستندات رسمی Docker برای Ubuntu</a> را ببینید.</li>
+</ul>
+<p>اگر DNS یا وب‌سایت شما سرویس عملیاتی دارد، قبل از تغییر رکوردها، فعال/غیرفعال‌کردن DNSSEC یا پاک‌سازی گسترده کش، اثر آن را بررسی و از رکوردها خروجی تهیه کنید.</p>
+
+<a id="security"></a>
+<h2>🔒 ۸. توصیه‌های امنیتی</h2>
+<ul>
+<li>هرگز <code>.env</code>، <code>data/</code>، <code>backups/</code>، کلید رمزنگاری، توکن یا لاگ خام را در GitHub قرار ندهید.</li>
+<li>توکن Cloudflare را با <strong>حداقل مجوز لازم</strong> و محدود به دامنه‌های خودتان بسازید؛ از Global API Key استفاده نکنید.</li>
+<li>توکن را فقط در <strong>چت خصوصی</strong> ربات وارد کنید. اگر افشا شد، فوراً از پنل Cloudflare آن را لغو و جایگزین کنید.</li>
+<li>برای مدیرها فقط شناسه عددی معتبر را در تنظیمات قرار دهید.</li>
+<li>نسخه‌های جدید را ابتدا روی حساب یا دامنه آزمایشی بررسی کنید؛ تست‌های آفلاین جای آزمون سرویس واقعی را نمی‌گیرند.</li>
+</ul>
+<h2>🧪 ۹. اجرای تست‌های آفلاین</h2>
+<p>برای بررسی منطق داخلی، در پوشه پروژه:</p>
+</div>
+
+~~~bash
 python3 test_auth.py
 python3 test_v25.py
 python3 test_v26.py
 python3 test_v27.py
-```
+~~~
 
-آزمون‌ها بررسی واقعی API Cloudflare نیستند؛ برای تأیید عملی لازم است اتصال و عملیات کم‌خطر را روی حساب آزمایشی اجرا کنید.
-
-## 🛠 خطاهای رایج
-
-| خطا | بررسی پیشنهادی |
-|---|---|
-| `6003` / `6111` | توکن خام را دوباره بررسی کنید؛ از Global API Key استفاده نکنید؛ در صورت نیاز Token جدید بسازید. |
-| `403` | مجوزها و محدوده Zone Resources، تاریخ انقضای توکن و IP restriction را بررسی کنید. |
-| `Message is not modified` | با زدن مجدد دکمه نباید خطای کاربری ایجاد شود. |
-| `Button_data_invalid` | نسخه 2.6 و بعد شناسه‌های بلند رکورد را فشرده می‌کنند. |
-| رمزگشایی توکن ناموفق | `ENCRYPTION_KEY` اولیه را از بکاپ `.env` بازیابی کنید؛ دیتابیس را پاک نکنید. |
-| روی گزینه DNS خطای API می‌گیرید | با «تست اتصال» مجوز خواندن Zone را بررسی و سپس مجوز DNS را کنترل کنید. |
-
-## ⚙️ تنظیمات محیطی
-
-فایل `.env` (توسط نصاب ساخته و محافظت می‌شود):
-
-```dotenv
-TELEGRAM_BOT_TOKEN=YOUR_TELEGRAM_BOT_TOKEN
-TELEGRAM_ADMIN_IDS=123456789
-ENCRYPTION_KEY=YOUR_OWN_FERNET_KEY
-DATA_DIR=/app/data
-```
-
-**این صرفاً قالب است؛ فایل `.env` واقعی را هرگز در GitHub یا لاگ منتشر نکنید.**
-
-## 🔒 نکات امنیتی
-
-- ربات تنها به کاربران موجود در `TELEGRAM_ADMIN_IDS` پاسخ می‌دهد.
-- **حساب Cloudflare و اطلاعات توکن را فقط در گفت‌وگوی خصوصی وارد کنید.**
-- پیام توکن پس از دریافت برای حذف تلاش می‌شود؛ در صورت عدم امکان حذف، توکن را از Cloudflare لغو و جایگزین کنید.
-- پوشه‌های `data/` و `backups/` حاوی اطلاعات حساس هستند و هرگز نباید در مخزن عمومی منتشر شوند.
-- حذف حساب در ربات، حساب و دامنه‌های واقعی Cloudflare را حذف نمی‌کند.
-- عملیات دارای اثر گسترده، مانند حذف رکورد، پاک‌سازی کامل کش و تغییر DNSSEC، با تأیید انجام می‌شوند.
-- فعال/غیرفعال‌سازی DNSSEC از API رسمی `PATCH /zones/{zone_id}/dnssec` استفاده می‌کند.
-
-**این نسخه در محیط آفلاین تست شده اما روی حساب واقعی Cloudflare و Bot Token عملیاتی آزمایش نشده است.** قبل از اعمال تغییرات حساس، از DNS خروجی تهیه کنید.
+<div dir="rtl" align="right">
+<p>این تست‌ها به توکن واقعی Telegram/Cloudflare نیاز ندارند؛ تأیید اتصال عملی را باید جداگانه و با دسترسی کم‌خطر انجام دهید.</p>
+<p>📖 <a href="README_EN.md">Read the English guide</a> | 🏠 <a href="README.md">بازگشت به صفحه اصلی</a> | ⬆️ <a href="#top">بالای صفحه</a></p>
+</div>
