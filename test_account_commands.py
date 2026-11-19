@@ -1,4 +1,4 @@
-"""v2.7.1 offline regression tests for /accounts, /about and project credits.
+"""Offline regression tests for /accounts, /about and project credits.
 No Telegram installation, credentials or network requests are required.
 """
 import ast
@@ -58,7 +58,7 @@ ns = {
     'list_accounts': lambda: accounts,
     'InlineKeyboardButton': Button, 'InlineKeyboardMarkup': Markup,
     'esc': html.escape, 'short': lambda text, n=38: str(text)[:n],
-    'ParseMode': SimpleNamespace(HTML='HTML'), 'VERSION': '2.7.1',
+    'ParseMode': SimpleNamespace(HTML='HTML'), 'VERSION': '2.7.2',
     'Update': object, 'ContextTypes': SimpleNamespace(DEFAULT_TYPE=object),
     'is_admin': lambda update: access['allowed'],
     'deny': deny, 'safe_edit': safe_edit,

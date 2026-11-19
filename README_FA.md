@@ -189,7 +189,7 @@ sudo docker compose ps
 <li><strong>خطای <code>6003</code> یا <code>6111</code>:</strong> معمولاً مشکل فرمت یا اعتبار هدر Authorization است. API Token خام را بدون Bearer و فاصله اضافی وارد کنید؛ در صورت لزوم یک توکن جدید بسازید.</li>
 <li><strong>خطای <code>403</code>:</strong> مجوزها، Zone Resources، محدودیت IP و تاریخ انقضای توکن را بررسی کنید.</li>
 <li><strong>خطای <code>404</code> یا خالی بودن فهرست دامنه‌ها:</strong> درستی Account ID، مجوز Zone Read و دامنه‌های قابل‌دسترسی را بررسی کنید.</li>
-<li><strong>خطای <code>Button_data_invalid</code>:</strong> نسخه ۲.۶ به بعد کدگذاری شناسه‌های طولانی را اصلاح می‌کند؛ مطمئن شوید کانتینر با سورس جدید ساخته شده است.</li>
+<li><strong>خطای <code>Button_data_invalid</code>:</strong> نسخه فعلی کدگذاری شناسه‌های طولانی را مدیریت می‌کند؛ مطمئن شوید کانتینر با سورس جدید ساخته شده است.</li>
 <li><strong>خطای <code>Message is not modified</code>:</strong> فشردن دوباره دکمه نباید خطای قابل‌مشاهده ایجاد کند؛ در صورت تکرار، نسخه نصب‌شده را بررسی کنید.</li>
 <li><strong>عدم امکان رمزگشایی حساب:</strong> کلید اصلی <code>ENCRYPTION_KEY</code> را از بکاپ بازیابی کنید؛ دیتابیس را پاک نکنید.</li>
 <li><strong>خطای Permission در SQLite:</strong> نصاب مجوز پوشه <code>data/</code> را برای UID کانتینر <code>10001</code> اصلاح می‌کند؛ دوباره نصاب را اجرا کنید.</li>
@@ -212,11 +212,11 @@ sudo docker compose ps
 
 ~~~bash
 python3 test_auth.py
-python3 test_v25.py
-python3 test_v26.py
-python3 test_v27.py
-python3 test_v271.py
-python3 test_v272.py
+python3 test_account_connection.py
+python3 test_callback_encoding.py
+python3 test_interface.py
+python3 test_account_commands.py
+python3 test_command_menu.py
 ~~~
 
 <div dir="rtl" align="right">

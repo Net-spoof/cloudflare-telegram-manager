@@ -15,8 +15,8 @@ jobs:
       - name: Run offline regressions
         run: |
           python test_auth.py
-          python test_v25.py
-          python test_v26.py
-          python test_v27.py
-          python test_v271.py
-          python test_v272.py
+          python test_account_connection.py
+          python test_callback_encoding.py
+          python test_interface.py
+          python test_account_commands.py
+          python test_command_menu.py

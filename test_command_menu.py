@@ -1,4 +1,4 @@
-"""v2.7.2: verify visible Telegram commands are the ones that the bot handles.
+"""Verify visible Telegram commands match the commands the bot handles.
 
 Runs offline without secrets, Telegram dependencies, or API requests.
 """

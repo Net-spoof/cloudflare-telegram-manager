@@ -8,7 +8,7 @@
 
 **A self-hosted Telegram control panel for Cloudflare DNS, zones, and security operations.**
 
-[![Release](https://img.shields.io/badge/release-v2.7.2-F48120?style=flat-square)](CHANGELOG.md)
+[![Latest Version](https://img.shields.io/badge/latest-v2.7.2-F48120?style=flat-square)](CHANGELOG.md)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white)](Dockerfile)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white)](docker-compose.yml)
 [![CI](https://github.com/Net-spoof/cloudflare-telegram-manager/actions/workflows/tests.yml/badge.svg)](https://github.com/Net-spoof/cloudflare-telegram-manager/actions/workflows/tests.yml)
@@ -103,9 +103,11 @@ Run local regression tests:
 
 ```bash
 python3 test_auth.py
-python3 test_v25.py
-python3 test_v26.py
-python3 test_v27.py && python3 test_v271.py && python3 test_v272.py
+python3 test_account_connection.py
+python3 test_callback_encoding.py
+python3 test_interface.py
+python3 test_account_commands.py
+python3 test_command_menu.py
 ```
 
 These tests run offline; they do not verify a live Telegram session or a real Cloudflare account.

@@ -181,7 +181,7 @@ The installer preserves the existing <code>.env</code>, **<code>ENCRYPTION_KEY</
 
 **Do not regenerate the encryption key.** Saved Cloudflare tokens cannot be decrypted without the original key.
 
-### Migrating from a ZIP-based v2.5/v2.6 installation
+### Migrating from an earlier ZIP-based installation
 
 1. Record the path of the **current** installation, which might be <code>/root/cloudflare-telegram-manager</code>.
 2. Make secure copies of the existing <code>.env</code> and <code>data/</code> before changing any files.
@@ -199,7 +199,7 @@ The installer preserves the existing <code>.env</code>, **<code>ENCRYPTION_KEY</
 | Cloudflare <code>6003</code> / <code>6111</code> | Authorization header/token formatting failed. Supply only the raw API Token; create a replacement if needed. |
 | Cloudflare <code>403</code> | Check token permissions, Zone Resources scope, expiration, and IP restrictions. |
 | Cloudflare <code>404</code> or missing zones | Verify Account ID, Zone Read permission, and whether the zone belongs to the selected account. |
-| Telegram <code>Button_data_invalid</code> | Ensure you are running v2.6+; long callback IDs are encoded to fit Telegram's limit. |
+| Telegram <code>Button_data_invalid</code> | Use the current build; long callback IDs are encoded to fit Telegram's limit. |
 | Telegram <code>Message is not modified</code> | Repeated taps should be treated as no-ops. Verify your installed version if the error persists. |
 | Encrypted tokens cannot be read | Restore the **original** <code>ENCRYPTION_KEY</code> from a trusted environment backup. Do not delete your database. |
 | SQLite permission errors | Re-run the installer; the bind-mounted data directory must be writable by container UID <code>10001</code>. |
@@ -221,11 +221,11 @@ Before editing production records or toggling DNSSEC, export current DNS setting
 
 ~~~bash
 python3 test_auth.py
-python3 test_v25.py
-python3 test_v26.py
-python3 test_v27.py
-python3 test_v271.py
-python3 test_v272.py
+python3 test_account_connection.py
+python3 test_callback_encoding.py
+python3 test_interface.py
+python3 test_account_commands.py
+python3 test_command_menu.py
 ~~~
 
 These tests validate local behavior without requiring real Telegram or Cloudflare credentials. For operational confidence, perform a low-risk connection and zone-list test against an account you control.

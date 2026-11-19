@@ -1,6 +1,6 @@
-"""v2.7 offline UI, wizard privacy, pagination and operation-confirmation tests.
+"""Offline UI, wizard privacy, pagination and operation-confirmation tests.
 
-Run with: python3 test_v27.py. Does not import Telegram, use secrets or call the network.
+Run with: python3 test_interface.py. Does not import Telegram, use secrets or call the network.
 """
 import ast
 import asyncio
@@ -62,7 +62,7 @@ ns={
     '_SHORT_CF_ID':re.compile(r'^~[A-Za-z0-9_-]{22}$'),
     'TelegramInlineKeyboardButton':TelegramInlineKeyboardButton,
     'InlineKeyboardMarkup':InlineKeyboardMarkup,'BadRequest':BadRequest,
-    'VERSION':'2.7.0','Update':object,'ContextTypes':SimpleNamespace(DEFAULT_TYPE=object),
+    'VERSION':'2.7.2','Update':object,'ContextTypes':SimpleNamespace(DEFAULT_TYPE=object),
     'ParseMode':SimpleNamespace(HTML='HTML'),
     'list_accounts':lambda:[account], 'get_account':lambda aid:account if aid==1 else None,
     'active_account':lambda:account,'get_zone':fake_zone,
@@ -127,4 +127,4 @@ async def run():
     assert any(m=='PATCH' and kw['json_body']['status']=='disabled' for m,_,kw in commands)
 
 asyncio.run(run())
-print(f'PASS: v2.7 menus, escaped account labels, token privacy, pagination and destructive confirmations; {len(created)} buttons valid')
+print(f'PASS: current menus, escaped account labels, token privacy, pagination and destructive confirmations; {len(created)} buttons valid')
