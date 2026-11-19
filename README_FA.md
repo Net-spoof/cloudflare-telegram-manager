@@ -3,7 +3,7 @@
 <div dir="rtl" align="right">
 
 <h1>☁️ راهنمای نصب و راه‌اندازی Cloudflare Telegram Manager</h1>
-<p><strong>Cloudflare Telegram Manager — نسخه ۲.۷.۰</strong></p>
+<p><strong>Cloudflare Telegram Manager — نسخه ۲.۷.۱</strong></p>
 <p>مرجع کامل نصب روی سرور، ساخت ربات تلگرام، اتصال امن حساب Cloudflare، راهبری سرویس، به‌روزرسانی و رفع خطاهای متداول.</p>
 <p>🌐 <a href="README_EN.md">English documentation</a> | 🏠 <a href="README.md">صفحه اصلی پروژه</a></p>
 
@@ -130,6 +130,8 @@ sudo bash diagnose.sh
 <ul>
 <li><code>/start</code> — بازکردن منوی اصلی</li>
 <li><code>/menu</code> — بازگشت به منوی اصلی</li>
+<li><code>/accounts</code> — مدیریت حساب‌های Cloudflare</li>
+<li><code>/about</code> — معرفی سازنده، سورس GitHub و کانال Net Spoof</li>
 <li><code>/help</code> — نمایش راهنمای ربات</li>
 <li><code>/cancel</code> — لغو مرحله فعلی</li>
 </ul>
@@ -210,6 +212,7 @@ python3 test_auth.py
 python3 test_v25.py
 python3 test_v26.py
 python3 test_v27.py
+python3 test_v271.py
 ~~~
 
 <div dir="rtl" align="right">

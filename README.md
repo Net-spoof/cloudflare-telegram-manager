@@ -8,7 +8,7 @@
 
 **A self-hosted Telegram control panel for Cloudflare DNS, zones, and security operations.**
 
-[![Release](https://img.shields.io/badge/release-v2.7.0-F48120?style=flat-square)](CHANGELOG.md)
+[![Release](https://img.shields.io/badge/release-v2.7.1-F48120?style=flat-square)](CHANGELOG.md)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white)](Dockerfile)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white)](docker-compose.yml)
 [![CI](https://github.com/Net-spoof/cloudflare-telegram-manager/actions/workflows/tests.yml/badge.svg)](https://github.com/Net-spoof/cloudflare-telegram-manager/actions/workflows/tests.yml)
@@ -66,6 +66,16 @@ In your Telegram bot's private chat, send `/start` and open **👤 حساب‌ه
 
 **Upgrading an existing installation?** Preserve its `.env`, `ENCRYPTION_KEY`, and `data/` directory. See [upgrade instructions](README_EN.md#upgrading-without-losing-data) before pulling or replacing files.
 
+## Bot commands
+
+| Command | Description |
+|---|---|
+| `/start`, `/menu` | Open the main dashboard |
+| `/accounts` | Manage connected Cloudflare accounts |
+| `/about` | Developer, repository and Telegram channel |
+| `/help` | Show bot help |
+| `/cancel` | Cancel the current input |
+
 ## Architecture
 
 ```mermaid
@@ -95,7 +105,7 @@ Run local regression tests:
 python3 test_auth.py
 python3 test_v25.py
 python3 test_v26.py
-python3 test_v27.py
+python3 test_v27.py && python3 test_v271.py
 ```
 
 These tests run offline; they do not verify a live Telegram session or a real Cloudflare account.

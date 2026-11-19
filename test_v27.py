@@ -15,7 +15,7 @@ tree=ast.parse(source)
 names={
     "encode_callback_data", "decode_callback_data", "InlineKeyboardButton",
     "home_text", "main_kb", "page_navigation", "guide_menu",
-    "account_detail_menu", "accounts_menu", "fetch_all_zones", "list_records",
+    "account_detail_menu", "accounts_view", "accounts_menu", "fetch_all_zones", "list_records",
     "dnssec_toggle", "callback", "safe_edit", "is_private_chat",
 }
 selected=[n for n in tree.body if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef)) and n.name in names]

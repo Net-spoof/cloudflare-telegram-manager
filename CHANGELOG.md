@@ -1,3 +1,8 @@
+## v2.7.1 (2026-11-19)
+- Fixed missing `/accounts` Telegram command; now opens the same interactive account-management screen as the Accounts button.
+- Added `/about` Telegram command and a unified About screen containing developer `Net-spoof`, repository and Telegram channel links.
+- Updated `/help` command list, documentation and offline tests.
+
 # Changelog
 
 ## v2.7.0 (2026-11-19)

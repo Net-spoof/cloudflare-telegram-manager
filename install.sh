@@ -116,5 +116,5 @@ if [[ -n "$CID" ]]; then
     exit 1
   fi
 fi
-echo 'Installed/updated Cloudflare Telegram Manager v2.7.0.'
+echo 'Installed/updated Cloudflare Telegram Manager v2.7.1.'
 echo 'Run ./diagnose.sh if Telegram commands do not respond.'

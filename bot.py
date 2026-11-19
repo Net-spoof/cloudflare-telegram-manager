@@ -36,7 +36,7 @@ DB_PATH = DATA_DIR / "bot.db"
 FERNET = Fernet(os.environ["ENCRYPTION_KEY"].strip().encode())
 CF_API = "https://api.cloudflare.com/client/v4"
 PAGE_SIZE = 8
-VERSION = "2.7.0"
+VERSION = "2.7.1"
 
 # Telegram inline keyboard callback_data is limited to 64 UTF-8 bytes.
 # Cloudflare zone/record IDs are 32-character hex strings. Reversible binary
@@ -472,10 +472,37 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "📖 <b>راهنمای ربات Cloudflare</b>\n\n"
         "برای مدیریت حساب‌ها و DNS از /start استفاده کنید. "
         "آموزش قدم‌به‌قدم اتصال در دکمه «راهنمای اتصال» موجود است.\n\n"
-        "فرمان‌ها: /start — منو | /help — راهنما | /cancel — لغو عملیات",
+        "فرمان‌ها:\n"
+        "/start — منوی اصلی\n"
+        "/accounts — مدیریت حساب‌ها\n"
+        "/about — درباره ربات\n"
+        "/help — راهنما\n"
+        "/cancel — لغو عملیات",
         parse_mode=ParseMode.HTML,reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton("📖 راهنمای اتصال",callback_data="guide")],
             [InlineKeyboardButton("🏠 منوی اصلی",callback_data="main")]]))
+
+
+async def accounts_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Open the exact same account listing as the inline Accounts button."""
+    if not is_admin(update):
+        return await deny(update)
+    context.user_data.clear()
+    text, keyboard = accounts_view()
+    return await update.effective_message.reply_text(
+        text, parse_mode=ParseMode.HTML, reply_markup=keyboard
+    )
+
+
+async def about_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not is_admin(update):
+        return await deny(update)
+    context.user_data.clear()
+    text, keyboard = about_view()
+    return await update.effective_message.reply_text(
+        text, parse_mode=ParseMode.HTML, reply_markup=keyboard,
+        disable_web_page_preview=True,
+    )
 
 
 async def cancel_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -694,18 +721,9 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if d.startswith("zoneinfo:"):
             zid=d.split(":",1)[1]; return await zone_info(q,zid)
         if d == "about":
-            return await safe_edit(q,
-                "ℹ️ <b>Cloudflare Telegram Manager v"+VERSION+"</b>\n\n"
-                "✅ مدیریت چند حساب Cloudflare\n"
-                "✅ پشتیبانی از ۲۱ نوع رکورد DNS\n"
-                "✅ جستجو و ویرایش رکوردها\n"
-                "✅ DNSSEC، کش، SSL و تنظیمات شبکه\n"
-                "✅ خروجی/ورودی BIND و راهنمای اتصال\n\n"
-                "🔐 توکن‌ها به‌صورت رمزنگاری‌شده در دیتابیس محلی نگهداری می‌شوند.\n"
-                "⚠️ دسترسی به قابلیت‌ها به مجوز API Token بستگی دارد.",
-                parse_mode=ParseMode.HTML,reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("📖 آموزش اتصال",callback_data="guide")],
-                    [InlineKeyboardButton("🏠 منوی اصلی",callback_data="main")]]))
+            text, keyboard = about_view()
+            return await safe_edit(q, text, parse_mode=ParseMode.HTML,
+                                   reply_markup=keyboard, disable_web_page_preview=True)
     except BadRequest as e:
         if "message is not modified" in str(e).lower():
             return
@@ -735,7 +753,8 @@ def cancel_kb(target="main"):
                                  [InlineKeyboardButton("🏠 منوی اصلی",callback_data="main")]])
 
 
-async def accounts_menu(q, note=""):
+def accounts_view(note=""):
+    """Build a single account screen shared by /accounts and inline buttons."""
     rows = list_accounts()
     kb = [[InlineKeyboardButton(("✅ " if a["active"] else "☁️ ") + short(a["label"], 29),
                                 callback_data=f"acc:view:{a['id']}")] for a in rows]
@@ -750,7 +769,42 @@ async def accounts_menu(q, note=""):
         f"🟢 حساب فعال: <b>{esc(next((r['label'] for r in rows if r['active']), 'ندارد'))}</b>\n\n"
         f"{desc}"
     )
-    await safe_edit(q, text, parse_mode=ParseMode.HTML, reply_markup=InlineKeyboardMarkup(kb))
+    return text, InlineKeyboardMarkup(kb)
+
+
+async def accounts_menu(q, note=""):
+    text, keyboard = accounts_view(note)
+    return await safe_edit(q, text, parse_mode=ParseMode.HTML, reply_markup=keyboard)
+
+
+def about_view():
+    """Project credits and links for both /about and the About button."""
+    project = "https://github.com/Net-spoof/cloudflare-telegram-manager"
+    developer = "https://github.com/Net-spoof"
+    channel = "https://t.me/NET_SPOOF"
+    text = (
+        "ℹ️ <b>Cloudflare Telegram Manager</b>\n"
+        f"🧩 نسخه: <code>{VERSION}</code>\n"
+        "━━━━━━━━━━━━━━━━\n\n"
+        "☁️ <b>مدیریت Cloudflare از تلگرام</b>\n"
+        "مدیریت حساب‌ها و دامنه‌ها، رکوردهای DNS، تنظیمات SSL، "
+        "کش و DNSSEC در یک محیط یکپارچه.\n\n"
+        "🔒 توکن‌ها به‌صورت رمزنگاری‌شده ذخیره می‌شوند.\n"
+        "⚠️ امکانات به دسترسی API Token شما وابسته‌اند.\n\n"
+        "━━━━━━━━━━━━━━━━\n"
+        f'👨‍💻 <b>سازنده:</b> <a href="{developer}">Net-spoof</a>\n'
+        f'📦 <b>گیت‌هاب:</b> <a href="{project}">github.com/Net-spoof/cloudflare-telegram-manager</a>\n'
+        f'📢 <b>کانال:</b> <a href="{channel}">@NET_SPOOF</a>\n\n'
+        "<i>این پروژه مستقل و غیررسمی است.</i>"
+    )
+    keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton("👨‍💻 GitHub سازنده", url=developer),
+         InlineKeyboardButton("📦 سورس پروژه", url=project)],
+        [InlineKeyboardButton("📢 کانال Net Spoof", url=channel)],
+        [InlineKeyboardButton("📖 راهنمای اتصال", callback_data="guide"),
+         InlineKeyboardButton("🏠 منوی اصلی", callback_data="main")],
+    ])
+    return text, keyboard
 
 
 async def zones_menu(q, page=0, note=""):
@@ -1182,6 +1236,8 @@ def main():
     app=Application.builder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start",start))
     app.add_handler(CommandHandler("menu",start))
+    app.add_handler(CommandHandler("accounts",accounts_command))
+    app.add_handler(CommandHandler("about",about_command))
     app.add_handler(CommandHandler("help",help_command))
     app.add_handler(CommandHandler("cancel",cancel_command))
     app.add_handler(CallbackQueryHandler(callback))

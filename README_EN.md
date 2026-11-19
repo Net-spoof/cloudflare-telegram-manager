@@ -2,7 +2,7 @@
 
 # Cloudflare Telegram Manager — Installation & Operations
 
-**Version 2.7.0** · Self-hosted · Docker Compose · Administrator-only
+**Version 2.7.1** · Self-hosted · Docker Compose · Administrator-only
 
 [🇮🇷 راهنمای فارسی](README_FA.md) · [🏠 Project README](README.md) · [Changelog](CHANGELOG.md)
 
@@ -134,6 +134,8 @@ A <code>403</code> response generally indicates missing or incorrectly scoped pe
 |---|---|
 | <code>/start</code> | Display the main menu |
 | <code>/menu</code> | Return to the main menu |
+| <code>/accounts</code> | Open Cloudflare account management |
+| <code>/about</code> | Developer, GitHub repository and Telegram channel links |
 | <code>/help</code> | Display help |
 | <code>/cancel</code> | Cancel the current input flow |
 
@@ -220,6 +222,7 @@ python3 test_auth.py
 python3 test_v25.py
 python3 test_v26.py
 python3 test_v27.py
+python3 test_v271.py
 ~~~
 
 These tests validate local behavior without requiring real Telegram or Cloudflare credentials. For operational confidence, perform a low-risk connection and zone-list test against an account you control.
