@@ -8,7 +8,7 @@
 
 **A self-hosted Telegram control panel for Cloudflare DNS, zones, and security operations.**
 
-[![Latest Version](https://img.shields.io/badge/latest-v2.7.2-F48120?style=flat-square)](CHANGELOG.md)
+[![Latest Version](https://img.shields.io/badge/latest-v2.8.0-F48120?style=flat-square)](CHANGELOG.md)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white)](Dockerfile)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white)](docker-compose.yml)
 [![CI](https://github.com/Net-spoof/cloudflare-telegram-manager/actions/workflows/tests.yml/badge.svg)](https://github.com/Net-spoof/cloudflare-telegram-manager/actions/workflows/tests.yml)
@@ -39,6 +39,12 @@ The Telegram interface is in Persian. Both Persian and English installation and 
 | **Operations** | Docker Compose, built-in onboarding, safe diagnostics and offline regression tests |
 
 > Available Cloudflare actions depend on the permissions and zone resources granted to each API token. This tool does not bypass Cloudflare permission checks.
+
+## Languages
+
+The bot interface supports **Persian 🇮🇷, English 🇬🇧, and Russian 🇷🇺**.
+
+Send `/language` or select **Language** in the main menu, then choose a language with the inline buttons. Each authorized administrator's selection is saved in the existing SQLite database and restored after a restart. The main screen, Cloudflare account workflows, DNS menus, help, settings and confirmation messages follow that choice. The Telegram command menu is updated when you switch languages.
 
 ## Quick start
 
@@ -108,6 +114,7 @@ python3 test_callback_encoding.py
 python3 test_interface.py
 python3 test_account_commands.py
 python3 test_command_menu.py
+python3 test_i18n.py
 ```
 
 These tests run offline; they do not verify a live Telegram session or a real Cloudflare account.

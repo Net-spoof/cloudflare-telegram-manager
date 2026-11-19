@@ -57,7 +57,7 @@ async def cf_request(a,method,path,**kw):
     raise AssertionError((method,path,kw))
 async def fake_zone(zid): return {"name":"example.test","paused":False,"status":"active"}
 async def ignored(*args,**kwargs): return None
-ns={
+ns={'tr':lambda x:x, 'localized_answer':lambda q,text=None,**kw:q.answer(text,**kw),
     'base64':base64,'re':re,'_CF_HEX_ID':re.compile(r'(?<=:)[0-9a-fA-F]{32}(?=:|$)'),
     '_SHORT_CF_ID':re.compile(r'^~[A-Za-z0-9_-]{22}$'),
     'TelegramInlineKeyboardButton':TelegramInlineKeyboardButton,

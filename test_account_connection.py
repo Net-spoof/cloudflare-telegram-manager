@@ -48,7 +48,7 @@ class Query:
         return 'success'
 
 cipher=Fernet(Fernet.generate_key())
-namespace={'BadRequest':BadRequest,'httpx':Httpx,'FERNET':cipher,'InvalidToken':Exception,
+namespace={'tr':lambda x:x,'BadRequest':BadRequest,'httpx':Httpx,'FERNET':cipher,'InvalidToken':Exception,
            'CF_API':'https://api.cloudflare.com/client/v4'}
 exec(compile(ast.Module(body=functions,type_ignores=[]),'bot-extracted','exec'),namespace)
 normalize=namespace['normalize_cf_token']

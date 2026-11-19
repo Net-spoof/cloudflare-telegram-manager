@@ -3,7 +3,7 @@
 <div dir="rtl" align="right">
 
 <h1>☁️ راهنمای نصب و راه‌اندازی Cloudflare Telegram Manager</h1>
-<p><strong>Cloudflare Telegram Manager — نسخه ۲.۷.۲</strong></p>
+<p><strong>Cloudflare Telegram Manager — نسخه ۲.۸.۰</strong></p>
 <p>مرجع کامل نصب روی سرور، ساخت ربات تلگرام، اتصال امن حساب Cloudflare، راهبری سرویس، به‌روزرسانی و رفع خطاهای متداول.</p>
 <p>🌐 <a href="README_EN.md">English documentation</a> | 🏠 <a href="README.md">صفحه اصلی پروژه</a></p>
 
@@ -130,11 +130,13 @@ sudo bash diagnose.sh
 <ul>
 <li><code>/start</code> — بازکردن منوی اصلی</li>
 <li><code>/menu</code> — بازگشت به منوی اصلی</li>
+<li><code>/language</code> — انتخاب زبان فارسی، انگلیسی یا روسی با دکمه</li>
 <li><code>/accounts</code> — مدیریت حساب‌های Cloudflare</li>
 <li><code>/about</code> — معرفی سازنده، سورس GitHub و کانال Net Spoof</li>
 <li><code>/help</code> — نمایش راهنمای ربات</li>
 <li><code>/cancel</code> — لغو مرحله فعلی</li>
 </ul>
+<p>🌐 <strong>زبان‌های ربات:</strong> فارسی 🇮🇷، انگلیسی 🇬🇧 و روسی 🇷🇺. برای تغییر زبان، دستور <code>/language</code> یا دکمه «انتخاب زبان» در منوی اصلی را بزنید. زبان هر مدیر جداگانه در دیتابیس ذخیره می‌شود و بعد از ری‌استارت هم حفظ خواهد شد.</p>
 <p>فهرست دستورهای منوی تلگرام هنگام راه‌اندازی ربات با همین دستورها هماهنگ می‌شود. پس از به‌روزرسانی و راه‌اندازی مجدد، فرمان قدیمی <code>/id</code> از منوی پیش‌فرض حذف می‌شود؛ این نسخه فرمان <code>/id</code> ندارد.</p>
 <ul>
 </ul>
@@ -217,6 +219,7 @@ python3 test_callback_encoding.py
 python3 test_interface.py
 python3 test_account_commands.py
 python3 test_command_menu.py
+python3 test_i18n.py
 ~~~
 
 <div dir="rtl" align="right">

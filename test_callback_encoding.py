@@ -61,7 +61,7 @@ async def cf_request(a, method, path, **kwargs):
     if '/settings/' in path: return {'result':{'value':'on'}}
     return {'result':[]}
 
-ns={
+ns={'tr':lambda x:x,
     'base64':base64, 're':re,'_CF_HEX_ID':re.compile(r'(?<=:)[0-9a-fA-F]{32}(?=:|$)'),
     '_SHORT_CF_ID':re.compile(r'^~[A-Za-z0-9_-]{22}$'),
     'TelegramInlineKeyboardButton':TelegramInlineKeyboardButton,

@@ -2,7 +2,7 @@
 
 # Cloudflare Telegram Manager — Installation & Operations
 
-**Version 2.7.2** · Self-hosted · Docker Compose · Administrator-only
+**Version 2.8.0** · Self-hosted · Docker Compose · Administrator-only
 
 [🇮🇷 راهنمای فارسی](README_FA.md) · [🏠 Project README](README.md) · [Changelog](CHANGELOG.md)
 
@@ -126,6 +126,10 @@ Open the Cloudflare dashboard, choose the account containing your zones, and cop
 
 A <code>403</code> response generally indicates missing or incorrectly scoped permissions, not necessarily an invalid token. A DNS-only token might not support other zone-management features.
 
+## Language preferences
+
+The interface supports **Persian 🇮🇷, English 🇬🇧 and Russian 🇷🇺**. Run `/language` or select the language button in the bot's home menu. Language is stored separately for each authorized administrator in SQLite; it persists across container restarts and does not affect Cloudflare credentials or DNS data. Interactive keyboards, menus, prompts, help and confirmation messages follow the selected language. The Telegram slash-command descriptions are also synchronized.
+
 ## Bot commands and service operations
 
 ### Bot commands
@@ -134,6 +138,7 @@ A <code>403</code> response generally indicates missing or incorrectly scoped pe
 |---|---|
 | <code>/start</code> | Display the main menu |
 | <code>/menu</code> | Return to the main menu |
+| <code>/language</code> | Choose Persian, English or Russian with buttons |
 | <code>/accounts</code> | Open Cloudflare account management |
 | <code>/about</code> | Developer, GitHub repository and Telegram channel links |
 | <code>/help</code> | Display help |
@@ -226,6 +231,7 @@ python3 test_callback_encoding.py
 python3 test_interface.py
 python3 test_account_commands.py
 python3 test_command_menu.py
+python3 test_i18n.py
 ~~~
 
 These tests validate local behavior without requiring real Telegram or Cloudflare credentials. For operational confidence, perform a low-risk connection and zone-list test against an account you control.

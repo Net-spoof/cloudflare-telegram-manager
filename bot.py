@@ -8,6 +8,8 @@ import os
 import re
 import sqlite3
 from contextlib import closing
+from contextvars import ContextVar
+from functools import wraps
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -15,9 +17,11 @@ from typing import Any
 import httpx
 from cryptography.fernet import Fernet, InvalidToken
 from dotenv import load_dotenv
+from i18n import translate_text, LANGUAGES
 from telegram import (
     BotCommand,
     BotCommandScopeAllPrivateChats,
+    BotCommandScopeChat,
     InlineKeyboardButton as TelegramInlineKeyboardButton,
     InlineKeyboardMarkup,
     Update,
@@ -42,7 +46,68 @@ DB_PATH = DATA_DIR / "bot.db"
 FERNET = Fernet(os.environ["ENCRYPTION_KEY"].strip().encode())
 CF_API = "https://api.cloudflare.com/client/v4"
 PAGE_SIZE = 8
-VERSION = "2.7.2"
+VERSION = "2.8.0"
+
+# A language is selected separately by each authorized Telegram user.
+# ContextVar keeps concurrent updates isolated without affecting other admins.
+CURRENT_LANGUAGE = ContextVar("cloudflare_ui_language", default="fa")
+LANGUAGE_NAMES = {"fa": "🇮🇷 فارسی", "en": "🇬🇧 English", "ru": "🇷🇺 Русский"}
+
+
+def tr(text):
+    return translate_text(text, CURRENT_LANGUAGE.get())
+
+
+def get_user_language(user_id: int) -> str:
+    with closing(db_connect()) as con:
+        row = con.execute("SELECT language FROM user_languages WHERE user_id=?", (user_id,)).fetchone()
+    return row[0] if row and row[0] in LANGUAGES else "fa"
+
+
+def save_user_language(user_id: int, language: str):
+    if language not in LANGUAGES:
+        raise ValueError("Unsupported language")
+    with closing(db_connect()) as con:
+        con.execute(
+            "INSERT INTO user_languages(user_id, language) VALUES(?, ?) "
+            "ON CONFLICT(user_id) DO UPDATE SET language=excluded.language",
+            (user_id, language),
+        )
+        con.commit()
+
+
+def localized_handler(handler):
+    """Bind the requesting user's persisted language for a single update."""
+    @wraps(handler)
+    async def wrapped(update, context):
+        user = update.effective_user
+        token = CURRENT_LANGUAGE.set(get_user_language(user.id) if user else "fa")
+        try:
+            return await handler(update, context)
+        finally:
+            CURRENT_LANGUAGE.reset(token)
+    return wrapped
+
+
+async def localized_reply(message, text, **kwargs):
+    return await message.reply_text(tr(text), **kwargs)
+
+
+async def localized_send(chat, text, **kwargs):
+    return await chat.send_message(tr(text), **kwargs)
+
+
+async def localized_answer(query, text=None, **kwargs):
+    if text is None:
+        return await query.answer(**kwargs)
+    return await query.answer(tr(text), **kwargs)
+
+
+async def localized_document_reply(message, **kwargs):
+    if "caption" in kwargs:
+        kwargs["caption"] = tr(kwargs["caption"])
+    return await message.reply_document(**kwargs)
+
 
 # Telegram inline keyboard callback_data is limited to 64 UTF-8 bytes.
 # Cloudflare zone/record IDs are 32-character hex strings. Reversible binary
@@ -94,7 +159,7 @@ def InlineKeyboardButton(text, *args, **kwargs):
     elif len(args) >= 2 and args[1] is not None:
         args = list(args)
         args[1] = encode_callback_data(args[1])
-    return TelegramInlineKeyboardButton(text, *args, **kwargs)
+    return TelegramInlineKeyboardButton(tr(text), *args, **kwargs)
 
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -158,6 +223,12 @@ def init_db():
                 token_enc BLOB NOT NULL,
                 active INTEGER NOT NULL DEFAULT 0,
                 created_at TEXT NOT NULL
+            )
+        """)
+        con.execute("""
+            CREATE TABLE IF NOT EXISTS user_languages (
+                user_id INTEGER PRIMARY KEY,
+                language TEXT NOT NULL CHECK(language IN ('fa', 'en', 'ru'))
             )
         """)
         con.commit()
@@ -291,7 +362,7 @@ def is_admin(update: Update) -> bool:
 async def safe_edit(q, text: str, **kwargs):
     """Treat repeated Telegram menu edits as a no-op, not an application error."""
     try:
-        return await q.edit_message_text(text, **kwargs)
+        return await q.edit_message_text(tr(text), **kwargs)
     except BadRequest as exc:
         if "message is not modified" in str(exc).lower():
             return None
@@ -302,7 +373,7 @@ async def deny(update: Update):
     if update.callback_query:
         await update.callback_query.answer("دسترسی ندارید.", show_alert=True)
     elif update.effective_message:
-        await update.effective_message.reply_text("⛔ دسترسی ندارید.")
+        await localized_reply(update.effective_message, "⛔ دسترسی ندارید.")
 
 
 async def cf_request(account_row, method: str, path: str, *, params=None, json_body=None, content=None, timeout=30):
@@ -474,7 +545,7 @@ async def fetch_all_zones(account):
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_admin(update):
         return await deny(update)
-    return await update.effective_message.reply_text(
+    return await localized_reply(update.effective_message, 
         "📖 <b>راهنمای ربات Cloudflare</b>\n\n"
         "برای مدیریت حساب‌ها و DNS از /start استفاده کنید. "
         "آموزش قدم‌به‌قدم اتصال در دکمه «راهنمای اتصال» موجود است.\n\n"
@@ -483,7 +554,9 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "/accounts — مدیریت حساب‌ها\n"
         "/about — درباره ربات\n"
         "/help — راهنما\n"
-        "/cancel — لغو عملیات",
+        "/cancel — لغو عملیات"
+        "\n/language — انتخاب زبان"
+        "\n/menu — منوی اصلی",
         parse_mode=ParseMode.HTML,reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton("📖 راهنمای اتصال",callback_data="guide")],
             [InlineKeyboardButton("🏠 منوی اصلی",callback_data="main")]]))
@@ -495,7 +568,7 @@ async def accounts_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return await deny(update)
     context.user_data.clear()
     text, keyboard = accounts_view()
-    return await update.effective_message.reply_text(
+    return await localized_reply(update.effective_message, 
         text, parse_mode=ParseMode.HTML, reply_markup=keyboard
     )
 
@@ -505,10 +578,43 @@ async def about_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return await deny(update)
     context.user_data.clear()
     text, keyboard = about_view()
-    return await update.effective_message.reply_text(
+    return await localized_reply(update.effective_message, 
         text, parse_mode=ParseMode.HTML, reply_markup=keyboard,
         disable_web_page_preview=True,
     )
+
+
+def language_view(success=False):
+    """Language picker with native labels; the selected choice is persisted."""
+    lang = CURRENT_LANGUAGE.get()
+    titles = {
+        "fa": "🌐 <b>زبان ربات</b>\n\nزبان دلخواهت رو انتخاب کن. این تنظیم بعد از ری‌استارت هم حفظ می‌شه.",
+        "en": "🌐 <b>Bot language</b>\n\nChoose your preferred language. Your selection is saved across restarts.",
+        "ru": "🌐 <b>Язык бота</b>\n\nВыберите язык интерфейса. Настройка сохранится после перезапуска.",
+    }
+    notice = {
+        "fa": "✅ زبان ربات با موفقیت تغییر کرد.\n\n",
+        "en": "✅ Bot language updated successfully.\n\n",
+        "ru": "✅ Язык бота успешно изменён.\n\n",
+    }
+    home = {"fa": "🏠 منوی اصلی", "en": "🏠 Main menu", "ru": "🏠 Главное меню"}
+    kb = [[InlineKeyboardButton(("✅ " if lang == code else "") + LANGUAGE_NAMES[code],
+                                callback_data="lang:" + code)] for code in LANGUAGES]
+    kb.append([InlineKeyboardButton(home[lang], callback_data="main")])
+    return (notice[lang] if success else "") + titles[lang], InlineKeyboardMarkup(kb)
+
+
+async def show_language_menu(query, success=False):
+    text, keyboard = language_view(success)
+    return await safe_edit(query, text, parse_mode=ParseMode.HTML, reply_markup=keyboard)
+
+
+async def language_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not is_admin(update):
+        return await deny(update)
+    text, keyboard = language_view()
+    return await localized_reply(update.effective_message, text,
+                                 parse_mode=ParseMode.HTML, reply_markup=keyboard)
 
 
 async def cancel_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -516,7 +622,7 @@ async def cancel_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return await deny(update)
     context.user_data.clear()
     a=active_account()
-    return await update.effective_message.reply_text(
+    return await localized_reply(update.effective_message, 
         "✅ عملیات جاری لغو شد.\n\n"+home_text(a),parse_mode=ParseMode.HTML,
         reply_markup=main_kb(bool(a)))
 
@@ -528,6 +634,7 @@ def main_kb(connected=True):
             [InlineKeyboardButton("🔗 اتصال اولین حساب", callback_data="acc:add")],
             [InlineKeyboardButton("📖 راهنمای گام‌به‌گام", callback_data="guide")],
             [InlineKeyboardButton("ℹ️ درباره ربات", callback_data="about")],
+            [InlineKeyboardButton("🌐 انتخاب زبان", callback_data="language")],
         ])
     return InlineKeyboardMarkup([
         [InlineKeyboardButton("🌐 مدیریت دامنه‌ها", callback_data="zones:0"),
@@ -535,6 +642,7 @@ def main_kb(connected=True):
         [InlineKeyboardButton("👤 حساب‌های Cloudflare", callback_data="accounts")],
         [InlineKeyboardButton("📖 راهنمای اتصال", callback_data="guide"),
          InlineKeyboardButton("ℹ️ درباره ربات", callback_data="about")],
+        [InlineKeyboardButton("🌐 انتخاب زبان", callback_data="language")],
     ])
 
 
@@ -543,7 +651,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return await deny(update)
     context.user_data.clear()
     acc = active_account()
-    return await update.effective_message.reply_text(
+    return await localized_reply(update.effective_message, 
         home_text(acc), parse_mode=ParseMode.HTML, reply_markup=main_kb(bool(acc))
     )
 
@@ -559,13 +667,28 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     d = decode_callback_data(q.data or "")
     if (d == "acc:add" or d.startswith("acc:token:")) and not is_private_chat(update):
-        return await q.answer("🔒 اتصال حساب و ورود توکن فقط در گفت‌وگوی خصوصی مجاز است.",show_alert=True)
-    await q.answer()
+        return await localized_answer(q, "🔒 اتصال حساب و ورود توکن فقط در گفت‌وگوی خصوصی مجاز است.",show_alert=True)
+    if not d.startswith("lang:"):
+        await localized_answer(q)
     if d != "noop":
         context.user_data.clear()
     try:
         if d == "noop": return
         if d == "main": return await show_main(q)
+        if d == "language": return await show_language_menu(q)
+        if d.startswith("lang:"):
+            if not is_private_chat(update):
+                return await localized_answer(q, "🔒 زبان را در گفت‌وگوی خصوصی تغییر دهید.", show_alert=True)
+            language = d.split(":", 1)[1]
+            if language not in LANGUAGES:
+                return await localized_answer(q, "❌ زبان انتخاب‌شده معتبر نیست.", show_alert=True)
+            await localized_answer(q)
+            save_user_language(update.effective_user.id, language)
+            CURRENT_LANGUAGE.set(language)
+            context.user_data.clear()
+            await publish_user_commands(context.bot, update.effective_chat.id, language)
+            return await show_language_menu(q, success=True)
+
         if d == "guide": return await guide_menu(q)
         if d.startswith("guide:"): return await guide_menu(q,d.split(":",1)[1])
         if d.startswith("acc:view:"):
@@ -573,7 +696,7 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if d == "accounts": return await accounts_menu(q)
         if d == "acc:add":
             if not is_private_chat(update):
-                return await q.answer("اتصال حساب فقط در گفت‌وگوی خصوصی مجاز است.",show_alert=True)
+                return await localized_answer(q, "اتصال حساب فقط در گفت‌وگوی خصوصی مجاز است.",show_alert=True)
             context.user_data["state"] = "acc_label"
             return await safe_edit(q,
                 "🔗 <b>اتصال حساب | مرحله ۱ از ۳</b>\n\n"
@@ -619,7 +742,7 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             if a is None: raise ValueError("اکانت پیدا نشد")
             context.user_data.clear()
             if not is_private_chat(update):
-                return await q.answer("تعویض توکن فقط در گفت‌وگوی خصوصی مجاز است.",show_alert=True)
+                return await localized_answer(q, "تعویض توکن فقط در گفت‌وگوی خصوصی مجاز است.",show_alert=True)
             context.user_data.update(state="acc_replace_token", edit_account_id=aid)
             return await safe_edit(q, 
                 f"🔐 <b>تعویض API Token</b>\n\nاکانت: <b>{esc(a['label'])}</b>\n\n"
@@ -992,7 +1115,7 @@ async def settings_menu(q,zid):
 
 async def toggle_setting(q,zid,key):
     a=active_account(); cur=(await cf_request(a,"GET",f"/zones/{zid}/settings/{key}"))["result"].get("value")
-    if cur not in ("on","off"): return await q.answer(f"این گزینه Toggle ساده نیست: {cur}",show_alert=True)
+    if cur not in ("on","off"): return await localized_answer(q, f"این گزینه Toggle ساده نیست: {cur}",show_alert=True)
     await cf_request(a,"PATCH",f"/zones/{zid}/settings/{key}",json_body={"value":"off" if cur=="on" else "on"})
     await settings_menu(q,zid)
 
@@ -1037,8 +1160,8 @@ async def dnssec_toggle(q,zid):
 async def export_dns(q,zid):
     a=active_account(); raw=await cf_request(a,"GET",f"/zones/{zid}/dns_records/export")
     z=await get_zone(zid); bio=io.BytesIO(raw); bio.name=f"{z['name']}.bind"
-    await q.message.reply_document(document=bio,filename=bio.name,caption=f"📤 DNS export — {z['name']}")
-    await q.answer("Export آماده شد")
+    await localized_document_reply(q.message, document=bio,filename=bio.name,caption=f"📤 DNS export — {z['name']}")
+    await localized_answer(q, "Export آماده شد")
 
 
 async def toggle_zone_pause(q,zid):
@@ -1069,12 +1192,12 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
             context.user_data.clear()
             try: await msg.delete()
             except Exception: pass
-            return await update.effective_chat.send_message("🔒 ورود اطلاعات اتصال فقط در گفت‌وگوی خصوصی مجاز است. /start")
+            return await localized_send(update.effective_chat, "🔒 ورود اطلاعات اتصال فقط در گفت‌وگوی خصوصی مجاز است. /start")
         if state=="acc_label":
             if not (1 <= len(text) <= 60):
                 raise ValueError("نام حساب باید بین ۱ تا ۶۰ کاراکتر باشد.")
             context.user_data.update(state="acc_id",label=text)
-            return await msg.reply_text(
+            return await localized_reply(msg, 
                 "🆔 <b>اتصال حساب | مرحله ۲ از ۳</b>\n\n"
                 "Account ID مربوط به همین حساب را ارسال کنید.\n"
                 "این شناسه ۳۲ کاراکتر دارد و با Zone ID متفاوت است.\n\n"
@@ -1084,7 +1207,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
             if not re.fullmatch(r"[0-9a-fA-F]{32}",text):
                 raise ValueError("Account ID باید دقیقاً ۳۲ کاراکتر هگزادسیمال باشد. لطفاً شناسه حساب را دوباره وارد کنید.")
             context.user_data.update(state="acc_token",account_id=text.lower())
-            return await msg.reply_text(
+            return await localized_reply(msg, 
                 "🔑 <b>اتصال حساب | مرحله ۳ از ۳</b>\n\n"
                 "API Token ساخته‌شده را ارسال کنید؛ فقط مقدار خام توکن، بدون Bearer.\n"
                 "توکن باید به دامنه‌های این حساب و دست‌کم مجوز مشاهده Zone دسترسی داشته باشد.\n\n"
@@ -1104,7 +1227,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     con.execute("UPDATE cf_accounts SET token_enc=? WHERE id=?",(encrypt_token(token),aid))
                     con.commit()
                 context.user_data.clear()
-                return await update.effective_chat.send_message(
+                return await localized_send(update.effective_chat, 
                     "✅ <b>API Token با موفقیت تعویض شد.</b>\n\nتوکن جدید آزمایش و به‌صورت رمزنگاری‌شده ذخیره شد.",
                     parse_mode=ParseMode.HTML,reply_markup=InlineKeyboardMarkup([
                       [InlineKeyboardButton("👤 مشاهده حساب",callback_data=f"acc:view:{aid}")],
@@ -1117,7 +1240,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 exists=con.execute("SELECT COUNT(*) FROM cf_accounts").fetchone()[0]
                 con.execute("INSERT INTO cf_accounts(label,account_id,token_enc,active,created_at) VALUES(?,?,?,?,?)",(label,accid,enc,0 if exists else 1,datetime.now(timezone.utc).isoformat())); con.commit()
             context.user_data.clear()
-            return await update.effective_chat.send_message(
+            return await localized_send(update.effective_chat, 
                 "✅ <b>حساب Cloudflare متصل شد!</b>\n\n"
                 f"👤 نام: <b>{esc(label)}</b>\n"
                 "🔐 توکن اعتبارسنجی و رمزنگاری شد. اکنون می‌توانید دامنه‌ها را مدیریت کنید.",
@@ -1132,7 +1255,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
             elif "." not in name: name=f"{name}.{z['name']}"
             context.user_data.update(state="add_content",record_name=name)
             hint=TYPE_HINTS.get(rtype,"مقدار رکورد را بفرست.")
-            return await msg.reply_text(f"🎯 مقدار <b>{rtype}</b> را بفرست.\n\n{hint}",parse_mode=ParseMode.HTML,reply_markup=cancel_kb(f"dns:{zid}:0"))
+            return await localized_reply(msg, f"🎯 مقدار <b>{rtype}</b> را بفرست.\n\n{hint}",parse_mode=ParseMode.HTML,reply_markup=cancel_kb(f"dns:{zid}:0"))
         if state=="add_content":
             rtype=context.user_data["record_type"]; context.user_data["content"]=text
             if rtype=="A":
@@ -1143,7 +1266,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if ipaddress.ip_address(text).version != 6: raise ValueError("برای رکورد AAAA باید IPv6 وارد شود.")
             if rtype in PRIORITY_TYPES:
                 context.user_data["state"]="add_priority"
-                return await msg.reply_text("⏱ اولویت (Priority) را با عدد ۰ تا ۶۵۵۳۵ ارسال کنید.",reply_markup=cancel_kb(f"dns:{context.user_data['zone_id']}:0"))
+                return await localized_reply(msg, "⏱ اولویت (Priority) را با عدد ۰ تا ۶۵۵۳۵ ارسال کنید.",reply_markup=cancel_kb(f"dns:{context.user_data['zone_id']}:0"))
             return await create_pending_record(msg,context)
         if state=="add_priority":
             p=int(text)
@@ -1160,12 +1283,12 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if field in ("content", "name") and not text: raise ValueError("مقدار جدید نمی‌تواند خالی باشد.")
                 body[field]=text
             a=active_account(); await cf_request(a,"PATCH",f"/zones/{zid}/dns_records/{rid}",json_body=body); context.user_data.clear()
-            return await msg.reply_text("✅ رکورد با موفقیت ویرایش شد.",reply_markup=InlineKeyboardMarkup([
+            return await localized_reply(msg, "✅ رکورد با موفقیت ویرایش شد.",reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton("↩️ بازگشت به رکورد",callback_data=f"rec:{zid}:{rid}")]]))
         if state=="zone_search":
             zid=context.user_data["zone_id"]; recs=await list_records(zid); term=text.lower(); found=[r for r in recs if term in str(r.get("name","")).lower() or term in str(r.get("content","")).lower() or term==str(r.get("type","")).lower()]
             kb=[[InlineKeyboardButton(record_label(r),callback_data=f"rec:{zid}:{r['id']}")] for r in found[:30]]; kb.append([InlineKeyboardButton("⬅️ رکوردها",callback_data=f"dns:{zid}:0")]); context.user_data.clear()
-            return await msg.reply_text(f"🔎 <b>نتایج جستجوی DNS</b>\n\nتعداد نتیجه: {len(found)}",parse_mode=ParseMode.HTML,reply_markup=InlineKeyboardMarkup(kb))
+            return await localized_reply(msg, f"🔎 <b>نتایج جستجوی DNS</b>\n\nتعداد نتیجه: {len(found)}",parse_mode=ParseMode.HTML,reply_markup=InlineKeyboardMarkup(kb))
         if state=="global_search":
             a=active_account(); zones=await fetch_all_zones(a); term=text.lower(); matches=[]
             for z in zones:
@@ -1175,19 +1298,19 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         if term in str(r.get("name","")).lower() or term in str(r.get("content","")).lower() or term==str(r.get("type","")).lower(): matches.append((z,r))
                 except Exception: continue
             kb=[[InlineKeyboardButton(f"{short(z['name'],14)} | {record_label(r)}",callback_data=f"rec:{z['id']}:{r['id']}")] for z,r in matches[:30]]; kb.append([InlineKeyboardButton("⬅️ منوی اصلی",callback_data="main")]); context.user_data.clear()
-            return await msg.reply_text(f"🔎 <b>نتایج جستجوی سراسری</b>\n\nتعداد نتیجه: {len(matches)}",parse_mode=ParseMode.HTML,reply_markup=InlineKeyboardMarkup(kb))
+            return await localized_reply(msg, f"🔎 <b>نتایج جستجوی سراسری</b>\n\nتعداد نتیجه: {len(matches)}",parse_mode=ParseMode.HTML,reply_markup=InlineKeyboardMarkup(kb))
         if state=="purge_url":
             zid=context.user_data["zone_id"]
             if not re.match(r"^https?://[^\s/]+(?:/|$)",text,re.I):
                 raise ValueError("یک URL کامل و معتبر با https:// یا http:// وارد کنید.")
             a=active_account(); await cf_request(a,"POST",f"/zones/{zid}/purge_cache",json_body={"files":[text]})
             context.user_data.clear()
-            return await msg.reply_text("✅ کش آدرس موردنظر پاک شد.",reply_markup=InlineKeyboardMarkup([
+            return await localized_reply(msg, "✅ کش آدرس موردنظر پاک شد.",reply_markup=InlineKeyboardMarkup([
               [InlineKeyboardButton("↩️ مدیریت کش",callback_data=f"cache:{zid}")]]))
     except Exception as e:
         # Auth inputs are deleted before being validated and secrets are never logged.
         log.error("text flow failed: %s", type(e).__name__)
-        await update.effective_chat.send_message(f"❌ خطا: <code>{esc(e)}</code>\n\n"
+        await localized_send(update.effective_chat, f"❌ خطا: <code>{esc(e)}</code>\n\n"
                                                  "اگر در حال واردکردن API Token هستی، یک مقدار معتبر دیگر بفرست. "
                                                  "توکن نامعتبر ذخیره نشده است.",parse_mode=ParseMode.HTML)
 
@@ -1199,7 +1322,7 @@ async def create_pending_record(msg,context):
     if rtype in PROXY_TYPES: body["proxied"]=False
     a=active_account(); result=(await cf_request(a,"POST",f"/zones/{zid}/dns_records",json_body=body))["result"]
     context.user_data.clear()
-    await msg.reply_text(f"✅ <b>رکورد DNS ساخته شد.</b>\n\n"
+    await localized_reply(msg, f"✅ <b>رکورد DNS ساخته شد.</b>\n\n"
         f"🧩 نوع: <b>{rtype}</b>\n"
         f"📛 نام: <code>{esc(result.get('name'))}</code>\n"
         f"🎯 مقدار: <code>{esc(result.get('content'))}</code>",
@@ -1213,12 +1336,12 @@ async def handle_document(update: Update, context: ContextTypes.DEFAULT_TYPE):
     zid=context.user_data["zone_id"]; doc=update.effective_message.document
     if not doc: return
     if not is_private_chat(update):
-        return await update.effective_message.reply_text("🔒 ارسال فایل رکوردها فقط در گفت‌وگوی خصوصی مجاز است.")
+        return await localized_reply(update.effective_message, "🔒 ارسال فایل رکوردها فقط در گفت‌وگوی خصوصی مجاز است.")
     if doc.file_size and doc.file_size>2*1024*1024:
-        return await update.effective_message.reply_text("⚠️ حجم فایل BIND نباید بیشتر از ۲ مگابایت باشد.")
+        return await localized_reply(update.effective_message, "⚠️ حجم فایل BIND نباید بیشتر از ۲ مگابایت باشد.")
     f=await doc.get_file(); data=await f.download_as_bytearray(); a=active_account()
     if len(data)>2*1024*1024:
-        return await update.effective_message.reply_text("⚠️ حجم فایل بیشتر از حد مجاز است.")
+        return await localized_reply(update.effective_message, "⚠️ حجم فایل بیشتر از حد مجاز است.")
     try:
         token=decrypt_token(a["token_enc"])
         headers={"Authorization":f"Bearer {token}"}
@@ -1227,9 +1350,9 @@ async def handle_document(update: Update, context: ContextTypes.DEFAULT_TYPE):
         j=r.json()
         if r.is_error or j.get("success") is False: raise RuntimeError("; ".join(e.get("message",str(e)) for e in j.get("errors",[])))
         context.user_data.clear(); res=j.get("result",{})
-        await update.effective_message.reply_text(f"✅ Import انجام شد.\nRecords: {res.get('recs_added',res)}\n/start")
+        await localized_reply(update.effective_message, f"✅ Import انجام شد.\nRecords: {res.get('recs_added',res)}\n/start")
     except Exception as e:
-        await update.effective_message.reply_text(f"❌ Import failed: <code>{esc(e)}</code>",parse_mode=ParseMode.HTML)
+        await localized_reply(update.effective_message, f"❌ Import failed: <code>{esc(e)}</code>",parse_mode=ParseMode.HTML)
 
 
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
@@ -1245,36 +1368,56 @@ BOT_COMMAND_MENU = (
     ("about", "ℹ️ درباره ربات و سازنده"),
     ("help", "📖 راهنمای استفاده از ربات"),
     ("cancel", "❌ لغو عملیات جاری"),
+    ("language", "🌐 انتخاب زبان"),
 )
+
+
+def command_list(language="fa"):
+    return [BotCommand(command=name, description=translate_text(description, language))
+            for name, description in BOT_COMMAND_MENU]
+
+
+async def publish_user_commands(bot, chat_id: int, language: str):
+    try:
+        await bot.set_my_commands(command_list(language), scope=BotCommandScopeChat(chat_id))
+    except Exception as exc:
+        log.warning("Unable to publish chat language commands: %s", type(exc).__name__)
 
 
 async def publish_bot_commands(application: Application):
     """Publish slash commands in the default and private-chat Telegram menus."""
-    commands = [BotCommand(command=name, description=description)
-                for name, description in BOT_COMMAND_MENU]
-    for scope in (None, BotCommandScopeAllPrivateChats()):
+    scopes = [
+        (None, None, "fa"),
+        (BotCommandScopeAllPrivateChats(), None, "fa"),
+        (BotCommandScopeAllPrivateChats(), "en", "en"),
+        (BotCommandScopeAllPrivateChats(), "ru", "ru"),
+    ]
+    for scope, locale_code, language in scopes:
         try:
-            await application.bot.set_my_commands(commands, scope=scope)
+            kwargs = {"scope": scope}
+            if locale_code:
+                kwargs["language_code"] = locale_code
+            await application.bot.set_my_commands(command_list(language), **kwargs)
         except Exception as exc:
-            # A temporary Telegram API failure should not prevent the bot from running.
-            label = "default" if scope is None else "all_private_chats"
-            log.warning("Unable to refresh Telegram commands for %s: %s",
-                        label, type(exc).__name__)
+            # Telegram API being unavailable must not stop the bot.
+            log.warning("Unable to refresh Telegram commands for %s/%s: %s",
+                        type(scope).__name__, locale_code, type(exc).__name__)
 
 
 def main():
     if not ADMIN_IDS: raise SystemExit("TELEGRAM_ADMIN_IDS is empty")
     init_db()
     app=Application.builder().token(BOT_TOKEN).post_init(publish_bot_commands).build()
-    app.add_handler(CommandHandler("start",start))
-    app.add_handler(CommandHandler("menu",start))
-    app.add_handler(CommandHandler("accounts",accounts_command))
-    app.add_handler(CommandHandler("about",about_command))
-    app.add_handler(CommandHandler("help",help_command))
-    app.add_handler(CommandHandler("cancel",cancel_command))
-    app.add_handler(CallbackQueryHandler(callback))
-    app.add_handler(MessageHandler(filters.Document.ALL,handle_document))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND,handle_text))
+    app.add_handler(CommandHandler("start",localized_handler(start)))
+    app.add_handler(CommandHandler("menu",localized_handler(start)))
+    app.add_handler(CommandHandler("accounts",localized_handler(accounts_command)))
+    app.add_handler(CommandHandler("about",localized_handler(about_command)))
+    app.add_handler(CommandHandler("help",localized_handler(help_command)))
+    app.add_handler(CommandHandler("cancel",localized_handler(cancel_command)))
+    app.add_handler(CommandHandler("language", localized_handler(language_command)))
+    app.add_handler(CallbackQueryHandler(localized_handler(callback)))
+    app.add_handler(MessageHandler(filters.Document.ALL,localized_handler(handle_document)))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND,localized_handler(handle_text)))
     app.add_error_handler(error_handler)
     app.run_polling(drop_pending_updates=True)
 

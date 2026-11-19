@@ -20,3 +20,4 @@ jobs:
           python test_interface.py
           python test_account_commands.py
           python test_command_menu.py
+          python test_i18n.py

@@ -1,0 +1,1038 @@
+{
+  "🔑 <b>مرحله ۱ از ۳ | ساخت API Token</b>\n\n۱. وارد داشبورد Cloudflare شوید.\n۲. از <b>My Profile → API Tokens → Create Token</b> استفاده کنید.\n۳. قالب <b>Edit zone DNS</b> یا <b>Custom Token</b> را انتخاب کنید.\n۴. برای مشاهده Zoneها: <code>Zone → Zone → Read</code> و برای DNS: <code>Zone → DNS → Edit</code> را بررسی کنید.\n۵. در <b>Zone Resources</b> تنها دامنه‌های موردنیاز را انتخاب کنید.\n۶. توکن تولیدشده را یک‌بار کپی کنید.\n\nامکانات اضافی نیاز به مجوزهای متناسب دارند؛ مانند <b>Zone Settings Edit</b> و <b>Cache Purge</b>.": {
+    "en": "🔑 <b>Step 1 of 3 | Create an API Token</b>\n\n1. Open the Cloudflare dashboard.\n2. Go to <b>My Profile → API Tokens → Create Token</b>.\n3. Choose <b>Edit zone DNS</b> or <b>Custom Token</b>.\n4. For zone listing, grant <code>Zone → Zone → Read</code>; for DNS changes, <code>Zone → DNS → Edit</code>.\n5. Under <b>Zone Resources</b>, select only the required zones.\n6. Copy the token when it is generated.\n\nAdditional features require corresponding permissions, such as <b>Zone Settings Edit</b> and <b>Cache Purge</b>.",
+    "ru": "🔑 <b>Шаг 1 из 3 | Создание API-токена</b>\n\n1. Откройте панель Cloudflare.\n2. Перейдите в <b>My Profile → API Tokens → Create Token</b>.\n3. Выберите <b>Edit zone DNS</b> или <b>Custom Token</b>.\n4. Для просмотра зон нужен <code>Zone → Zone → Read</code>, для изменения DNS — <code>Zone → DNS → Edit</code>.\n5. В <b>Zone Resources</b> укажите только нужные домены.\n6. Скопируйте созданный токен.\n\nДругим функциям могут понадобиться дополнительные права, например <b>Zone Settings Edit</b> и <b>Cache Purge</b>."
+  },
+  "🛠 <b>رفع خطاهای اتصال</b>\n\n<code>6003 / 6111</code>: هدر Authorization رد شده؛ مقدار خام API Token را دوباره کپی کنید.\n\n<code>403</code>: دامنه یا مجوز لازم در محدوده توکن نیست؛ Zone Resources و Permissionها را بررسی کنید.\n\n<code>404</code>: Account ID یا شناسه دامنه اشتباه است، یا امکان مشاهده آن را ندارید.\n\n<code>Message is not modified</code>: کلیک تکراری؛ منو باید بدون خطای نمایشی باقی بماند.\n\n⚠️ اگر توکن داخل گروه یا لاگ منتشر شده، از داشبورد Cloudflare آن را باطل و جایگزین کنید.": {
+    "en": "🛠 <b>Troubleshooting connection errors</b>\n\n<code>6003 / 6111</code>: Authorization header rejected. Copy the raw API Token again.\n\n<code>403</code>: A zone or permission is outside the token scope. Check Zone Resources and Permissions.\n\n<code>404</code>: Wrong Account ID or zone ID, or insufficient visibility.\n\n<code>Message is not modified</code>: Repeated tap; the menu should remain open without an error.\n\n⚠️ If your token appeared in a group or logs, revoke it in Cloudflare and create a new one.",
+    "ru": "🛠 <b>Устранение ошибок подключения</b>\n\n<code>6003 / 6111</code>: отклонён заголовок Authorization. Скопируйте API-токен без префикса.\n\n<code>403</code>: зона или разрешение не входят в область действия токена. Проверьте Zone Resources и Permissions.\n\n<code>404</code>: неверный Account ID или идентификатор зоны либо нет доступа.\n\n<code>Message is not modified</code>: повторное нажатие; меню должно остаться открытым без ошибки.\n\n⚠️ Если токен попал в группу или логи, отзовите его в Cloudflare и создайте новый."
+  },
+  "✅ <b>مرحله ۳ از ۳ | اتصال در تلگرام</b>\n\n۱. «اتصال حساب» را بزنید.\n۲. یک نام دلخواه برای حساب تعیین کنید.\n۳. Account ID را وارد کنید.\n۴. مقدار خام API Token را ارسال کنید؛ بدون عبارت <code>Bearer</code>.\n۵. ربات توکن را با API واقعی Cloudflare بررسی می‌کند و فقط در صورت موفقیت ذخیره می‌کند.\n\n🧹 پیام حاوی توکن پس از دریافت برای حذف از گفت‌وگو تلاش می‌شود.": {
+    "en": "✅ <b>Step 3 of 3 | Connect in Telegram</b>\n\n1. Tap “Connect account”.\n2. Enter a name for the account.\n3. Enter its Account ID.\n4. Send the raw API Token, without <code>Bearer</code>.\n5. The bot verifies the token against Cloudflare before saving it.\n\n🧹 The bot attempts to delete the message containing the token.",
+    "ru": "✅ <b>Шаг 3 из 3 | Подключение в Telegram</b>\n\n1. Нажмите «Подключить аккаунт».\n2. Введите название аккаунта.\n3. Укажите Account ID.\n4. Отправьте API-токен без <code>Bearer</code>.\n5. Бот проверит токен через Cloudflare и сохранит его только при успешной проверке.\n\n🧹 Бот попытается удалить сообщение с токеном."
+  },
+  "🆔 <b>مرحله ۲ از ۳ | Account ID</b>\n\n۱. در داشبورد Cloudflare حسابی که دامنه‌ها داخل آن هستند را باز کنید.\n۲. شناسه <b>Account ID</b> همان حساب را از صفحه حساب کپی کنید.\n۳. شناسه شامل ۳۲ کاراکتر هگزادسیمال است و با Zone ID فرق دارد.\n\n✅ حسابی را انتخاب کنید که دامنه‌های موردنظر واقعاً به آن تعلق دارند.": {
+    "en": "🆔 <b>Step 2 of 3 | Account ID</b>\n\n1. Open the Cloudflare account containing your zones.\n2. Copy the <b>Account ID</b> shown in its dashboard.\n3. This ID has 32 hexadecimal characters and is different from the Zone ID.\n\n✅ Use the account that actually owns the zones you want to manage.",
+    "ru": "🆔 <b>Шаг 2 из 3 | Account ID</b>\n\n1. Откройте аккаунт Cloudflare, в котором находятся ваши домены.\n2. Скопируйте <b>Account ID</b> из панели аккаунта.\n3. Это 32 шестнадцатеричных символа; не путайте его с Zone ID.\n\n✅ Выберите аккаунт, которому принадлежат нужные зоны."
+  },
+  "</code>\n━━━━━━━━━━━━━━━━\n\n☁️ <b>مدیریت Cloudflare از تلگرام</b>\nمدیریت حساب‌ها و دامنه‌ها، رکوردهای DNS، تنظیمات SSL، کش و DNSSEC در یک محیط یکپارچه.\n\n🔒 توکن‌ها به‌صورت رمزنگاری‌شده ذخیره می‌شوند.\n⚠️ امکانات به دسترسی API Token شما وابسته‌اند.\n\n━━━━━━━━━━━━━━━━\n👨‍💻 <b>سازنده:</b> <a href=\"": {
+    "en": "</code>\n━━━━━━━━━━━━━━━━\n\n☁️ <b>Cloudflare management via Telegram</b>\nManage accounts, domains, DNS records, SSL, cache and DNSSEC in one place.\n\n🔒 Tokens are stored encrypted.\n⚠️ Available features depend on your API Token permissions.\n\n━━━━━━━━━━━━━━━━\n👨‍💻 <b>Developer:</b> <a href=\"",
+    "ru": "</code>\n━━━━━━━━━━━━━━━━\n\n☁️ <b>Управление Cloudflare через Telegram</b>\nАккаунты, домены, DNS, SSL, кэш и DNSSEC в одном интерфейсе.\n\n🔒 Токены хранятся в зашифрованном виде.\n⚠️ Возможности зависят от прав вашего API-токена.\n\n━━━━━━━━━━━━━━━━\n👨‍💻 <b>Разработчик:</b> <a href=\""
+  },
+  "📖 <b>راهنمای اتصال Cloudflare</b>\n\nاتصال در ۳ مرحله انجام می‌شود:\n<b>۱.</b> ساخت API Token با مجوزهای محدود\n<b>۲.</b> دریافت Account ID\n<b>۳.</b> ثبت و تست حساب در ربات\n\n🔐 توکن را فقط در گفت‌وگوی خصوصی با ربات وارد کنید؛ هرگز Global API Key یا رمز عبور نفرستید.": {
+    "en": "📖 <b>Cloudflare connection guide</b>\n\nConnect in 3 steps:\n<b>1.</b> Create a scoped API Token\n<b>2.</b> Find the Account ID\n<b>3.</b> Add and test the account in Telegram\n\n🔐 Enter tokens only in a private chat with the bot; never share a Global API Key or password.",
+    "ru": "📖 <b>Руководство по подключению Cloudflare</b>\n\nПодключение в 3 шага:\n<b>1.</b> Создать API-токен с ограниченными правами\n<b>2.</b> Узнать Account ID\n<b>3.</b> Добавить и проверить аккаунт в Telegram\n\n🔐 Вводите токен только в личном чате с ботом; не отправляйте Global API Key или пароль."
+  },
+  "📖 <b>راهنمای ربات Cloudflare</b>\n\nبرای مدیریت حساب‌ها و DNS از /start استفاده کنید. آموزش قدم‌به‌قدم اتصال در دکمه «راهنمای اتصال» موجود است.\n\nفرمان‌ها:\n/start — منوی اصلی\n/accounts — مدیریت حساب‌ها\n/about — درباره ربات\n/help — راهنما\n/cancel — لغو عملیات": {
+    "en": "📖 <b>Cloudflare Bot Help</b>\n\nUse /start to manage accounts and DNS. The “Connection guide” button provides step-by-step setup instructions.\n\nCommands:\n/start — Main menu\n/accounts — Manage accounts\n/about — About the bot\n/help — Help\n/cancel — Cancel operation",
+    "ru": "📖 <b>Справка по боту Cloudflare</b>\n\nИспользуйте /start для управления аккаунтами и DNS. Пошаговая инструкция доступна по кнопке «Руководство по подключению».\n\nКоманды:\n/start — Главное меню\n/accounts — Управление аккаунтами\n/about — О боте\n/help — Помощь\n/cancel — Отмена операции"
+  },
+  "🔑 <b>اتصال حساب | مرحله ۳ از ۳</b>\n\nAPI Token ساخته‌شده را ارسال کنید؛ فقط مقدار خام توکن، بدون Bearer.\nتوکن باید به دامنه‌های این حساب و دست‌کم مجوز مشاهده Zone دسترسی داشته باشد.\n\n🔒 بعد از دریافت، پیام حاوی توکن را حذف می‌کنم و اتصال را می‌آزمایم.": {
+    "en": "🔑 <b>Connect account | Step 3 of 3</b>\n\nSend the raw API Token, without Bearer.\nYour token must have access to this account's zones and at least Zone Read permission.\n\n🔒 The bot will attempt to delete the token message and verify the connection.",
+    "ru": "🔑 <b>Подключение аккаунта | Шаг 3 из 3</b>\n\nОтправьте API-токен без Bearer.\nТокен должен иметь доступ к зонам аккаунта и как минимум право Zone Read.\n\n🔒 Бот попытается удалить сообщение с токеном и проверить подключение."
+  },
+  "🔗 <b>اتصال حساب | مرحله ۱ از ۳</b>\n\nیک نام دلخواه برای شناسایی حساب وارد کنید.\nمثال: <code>حساب اصلی</code> یا <code>سایت‌های کاری</code>\n\n🔐 اطلاعات حساب فقط در همین گفت‌وگوی خصوصی دریافت می‌شود.": {
+    "en": "🔗 <b>Connect account | Step 1 of 3</b>\n\nEnter a name to identify the account.\nExample: <code>Main account</code> or <code>Work sites</code>\n\n🔐 Account details are accepted only in this private chat.",
+    "ru": "🔗 <b>Подключение аккаунта | Шаг 1 из 3</b>\n\nВведите удобное название аккаунта.\nНапример: <code>Основной аккаунт</code> или <code>Рабочие сайты</code>\n\n🔐 Данные аккаунта принимаются только в этом личном чате."
+  },
+  "🆔 <b>اتصال حساب | مرحله ۲ از ۳</b>\n\nAccount ID مربوط به همین حساب را ارسال کنید.\nاین شناسه ۳۲ کاراکتر دارد و با Zone ID متفاوت است.\n\nراهنما: Cloudflare Dashboard → انتخاب حساب → Account ID": {
+    "en": "🆔 <b>Connect account | Step 2 of 3</b>\n\nSend the Account ID for this account.\nIt consists of 32 characters and differs from the Zone ID.\n\nHint: Cloudflare Dashboard → Select account → Account ID",
+    "ru": "🆔 <b>Подключение аккаунта | Шаг 2 из 3</b>\n\nОтправьте Account ID этого аккаунта.\nОн состоит из 32 символов и отличается от Zone ID.\n\nПодсказка: Cloudflare Dashboard → Выбрать аккаунт → Account ID"
+  },
+  "\n━━━━━━━━━━━━━━━━\n🔐 <b>حسابی متصل نیست</b>\n\nمدیریت دامنه‌ها، رکوردهای DNS و تنظیمات Cloudflare، مستقیم از تلگرام.\n\nبرای شروع، «اتصال اولین حساب» را بزنید یا راهنمای اتصال را ببینید.": {
+    "en": "\n━━━━━━━━━━━━━━━━\n🔐 <b>No account connected</b>\n\nManage domains, DNS records and Cloudflare settings directly from Telegram.\n\nTap “Connect first account” or open the connection guide to get started.",
+    "ru": "\n━━━━━━━━━━━━━━━━\n🔐 <b>Аккаунты не подключены</b>\n\nУправляйте доменами, DNS и настройками Cloudflare прямо в Telegram.\n\nНажмите «Подключить первый аккаунт» или откройте инструкцию."
+  },
+  "🛡️ <b>تنظیمات امنیت و شبکه</b>\n\n🟢 روشن  |  ⚪ خاموش  |  🔒 غیرقابل‌دسترسی\n\nبا انتخاب هر گزینه، وضعیت آن تغییر می‌کند. برخی قابلیت‌ها به سطح دسترسی API یا پلن شما وابسته‌اند.": {
+    "en": "🛡️ <b>Security and network settings</b>\n\n🟢 On  |  ⚪ Off  |  🔒 Unavailable\n\nTap a setting to change it. Some features depend on your Cloudflare plan and API permissions.",
+    "ru": "🛡️ <b>Настройки безопасности и сети</b>\n\n🟢 Вкл.  |  ⚪ Выкл.  |  🔒 Недоступно\n\nНажмите на настройку, чтобы изменить её. Некоторые функции зависят от тарифа Cloudflare и прав API."
+  },
+  "🧹 <b>مدیریت کش Cloudflare</b>\n\nمی‌توانید محتوای ذخیره‌شده برای یک URL مشخص یا کل دامنه را پاک کنید.\n\n⚠️ پاک‌سازی کامل ممکن است موقتاً بار سرور اصلی را بیشتر کند.": {
+    "en": "🧹 <b>Cloudflare cache management</b>\n\nPurge cached content for one URL or the entire zone.\n\n⚠️ A full purge may temporarily increase load on your origin server.",
+    "ru": "🧹 <b>Управление кэшем Cloudflare</b>\n\nОчистите кэш отдельного URL или всей зоны.\n\n⚠️ Полная очистка может временно увеличить нагрузку на исходный сервер."
+  },
+  "📥 <b>ورود رکوردهای DNS</b>\n\nفایل BIND معتبر را به‌صورت Document ارسال کنید.\n⚠️ ورود فایل می‌تواند رکوردهای جدید بسازد؛ فایل را پیش از ارسال بازبینی کنید.": {
+    "en": "📥 <b>Import DNS records</b>\n\nSend a valid BIND file as a document.\n⚠️ Importing may create new records; review the file before uploading.",
+    "ru": "📥 <b>Импорт DNS-записей</b>\n\nОтправьте корректный файл BIND как документ.\n⚠️ Импорт может создать новые записи; проверьте файл перед отправкой."
+  },
+  "</b>\n\nمقدار خام API Token جدید را بفرست؛ بدون Bearer.\nقبل از ذخیره، اتصال با Cloudflare آزمایش می‌شود.\n\n🔒 پیام حاوی توکن برای حذف از چت تلاش می‌شود.": {
+    "en": "</b>\n\nSend the new raw API Token without Bearer.\nThe connection will be tested against Cloudflare before saving.\n\n🔒 The bot will attempt to delete the token message.",
+    "ru": "</b>\n\nОтправьте новый API-токен без Bearer.\nПеред сохранением соединение с Cloudflare будет проверено.\n\n🔒 Бот попытается удалить сообщение с токеном."
+  },
+  "</b>\n🟢 وضعیت: حساب ذخیره‌شده\n\n🌐 از منوی زیر بخش موردنظر را انتخاب کنید. برای بررسی اعتبار توکن، از «حساب‌های Cloudflare ← تست اتصال» استفاده کنید.": {
+    "en": "</b>\n🟢 Status: Account saved\n\n🌐 Choose a section below. To verify the token, go to “Cloudflare Accounts → Test connection”.",
+    "ru": "</b>\n🟢 Статус: аккаунт сохранён\n\n🌐 Выберите раздел ниже. Для проверки токена используйте «Аккаунты Cloudflare → Проверить подключение»."
+  },
+  "⚠️ <b>تأیید تغییر DNSSEC</b>\n\nتغییر DNSSEC بدون هماهنگی رکورد DS در رجیسترار می‌تواند باعث اختلال در دسترسی دامنه شود. ادامه می‌دهید؟": {
+    "en": "⚠️ <b>Confirm DNSSEC change</b>\n\nChanging DNSSEC without coordinating the DS record with your registrar can interrupt DNS resolution. Continue?",
+    "ru": "⚠️ <b>Подтвердите изменение DNSSEC</b>\n\nИзменение DNSSEC без согласования DS-записи у регистратора может нарушить работу домена. Продолжить?"
+  },
+  "⚠️ <b>تأیید پاک‌سازی کامل کش</b>\n\nهمه محتوای Cache دامنه حذف می‌شود و ممکن است بار سرور اصلی افزایش پیدا کند. ادامه می‌دهید؟": {
+    "en": "⚠️ <b>Confirm full cache purge</b>\n\nAll cached content will be purged. This may temporarily increase origin-server load. Continue?",
+    "ru": "⚠️ <b>Подтвердите полную очистку кэша</b>\n\nВесь кэш домена будет очищен. Это может временно увеличить нагрузку на исходный сервер. Продолжить?"
+  },
+  "\n🔑 مقدار API Token پذیرفته نشد. از داشبورد Cloudflare یک API Token تازه بساز؛ فقط مقدار خام آن را در «تعویض API» بفرست.": {
+    "en": "\n🔑 The API Token was rejected. Create a fresh API Token in Cloudflare and paste only its raw value under “Replace API Token”.",
+    "ru": "\n🔑 API-токен отклонён. Создайте новый токен в Cloudflare и вставьте только его значение в разделе «Заменить API-токен»."
+  },
+  "🔎 <b>جستجوی سراسری DNS</b>\n\nنام رکورد، IP یا نوع آن را بفرستید. جستجو در دامنه‌های قابل‌دسترسی حساب فعال انجام می‌شود.": {
+    "en": "🔎 <b>Search all DNS records</b>\n\nSend a record name, IP address or type. The search covers zones accessible to the active account.",
+    "ru": "🔎 <b>Поиск по всем DNS-записям</b>\n\nОтправьте имя записи, IP-адрес или тип. Поиск выполнится по доступным зонам активного аккаунта."
+  },
+  "کلید رمزنگاری این اکانت با ENCRYPTION_KEY فعلی مطابقت ندارد؛ کلید قبلی را از بکاپ بازیابی کنید. Token را پاک نکنید.": {
+    "en": "This account's encryption key does not match the current ENCRYPTION_KEY. Restore the previous key from a backup; do not delete the token.",
+    "ru": "Ключ шифрования аккаунта не совпадает с текущим ENCRYPTION_KEY. Восстановите прежний ключ из резервной копии; не удаляйте токен."
+  },
+  "</code>\n🔐 API Token: <b>ذخیره‌شده و رمزنگاری‌شده</b>\n\nبرای اطمینان از مجوز و اعتبار توکن، تست اتصال را اجرا کنید.": {
+    "en": "</code>\n🔐 API Token: <b>Stored and encrypted</b>\n\nRun a connection test to check token validity and permissions.",
+    "ru": "</code>\n🔐 API-токен: <b>Сохранён и зашифрован</b>\n\nПроверьте подключение, чтобы убедиться в действительности токена и наличии прав."
+  },
+  "</b>\n\nنام میزبان را بفرستید.\nمثال: <code>@</code> برای دامنه اصلی، <code>api</code> برای زیردامنه، یا نام کامل.": {
+    "en": "</b>\n\nSend the hostname.\nExample: <code>@</code> for the root domain, <code>api</code> for a subdomain, or a fully qualified name.",
+    "ru": "</b>\n\nОтправьте имя хоста.\nНапример: <code>@</code> для корневого домена, <code>api</code> для поддомена или полное имя."
+  },
+  "</code>\n\nاگر در حال واردکردن API Token هستی، یک مقدار معتبر دیگر بفرست. توکن نامعتبر ذخیره نشده است.": {
+    "en": "</code>\n\nIf you are entering an API Token, send another valid value. The invalid token was not saved.",
+    "ru": "</code>\n\nЕсли вы вводите API-токен, отправьте другое корректное значение. Неверный токен не сохранён."
+  },
+  "⚠️ <b>تأیید حذف رکورد DNS</b>\n\nاین عملیات غیرقابل‌بازگشت است. برای ادامه «حذف قطعی» را انتخاب کنید.": {
+    "en": "⚠️ <b>Confirm DNS record deletion</b>\n\nThis action cannot be undone. Select “Delete permanently” to continue.",
+    "ru": "⚠️ <b>Подтвердите удаление DNS-записи</b>\n\nЭто действие нельзя отменить. Выберите «Удалить навсегда», чтобы продолжить."
+  },
+  "✅ <b>Cloudflare وصل است</b>\n\nدرخواست خواندنی لیست دامنه‌ها موفق بود.\nتعداد دامنه‌های قابل‌مشاهده: ": {
+    "en": "✅ <b>Cloudflare is connected</b>\n\nThe read-only zone listing request succeeded.\nVisible zones: ",
+    "ru": "✅ <b>Cloudflare подключён</b>\n\nЗапрос списка зон успешно выполнен.\nДоступных зон: "
+  },
+  "فرمت: <code>usage selector matching-type certificate-data</code>، مثال: <code>3 1 1 HEX...</code>": {
+    "en": "Format: <code>usage selector matching-type certificate-data</code>, e.g. <code>3 1 1 HEX...</code>",
+    "ru": "Формат: <code>usage selector matching-type certificate-data</code>, пример: <code>3 1 1 HEX...</code>"
+  },
+  "فرمت: <code>priority weight port target</code>، مثال: <code>10 5 443 service.example.com</code>": {
+    "en": "Format: <code>priority weight port target</code>, e.g. <code>10 5 443 service.example.com</code>",
+    "ru": "Формат: <code>priority weight port target</code>, пример: <code>10 5 443 service.example.com</code>"
+  },
+  "</b>\n\nتوکن ذخیره‌شده از ربات حذف می‌شود؛ خود حساب و دامنه‌های Cloudflare دست‌نخورده می‌مانند.": {
+    "en": "</b>\n\nThe saved token will be deleted from this bot. Your Cloudflare account and its domains will not be changed.",
+    "ru": "</b>\n\nСохранённый токен будет удалён из бота. Аккаунт Cloudflare и его домены останутся без изменений."
+  },
+  "فرمت: <code>algorithm fingerprint-type fingerprint</code>، مثال: <code>4 2 ABCDEF...</code>": {
+    "en": "Format: <code>algorithm fingerprint-type fingerprint</code>, e.g. <code>4 2 ABCDEF...</code>",
+    "ru": "Формат: <code>algorithm fingerprint-type fingerprint</code>, пример: <code>4 2 ABCDEF...</code>"
+  },
+  "✅ <b>API Token با موفقیت تعویض شد.</b>\n\nتوکن جدید آزمایش و به‌صورت رمزنگاری‌شده ذخیره شد.": {
+    "en": "✅ <b>API Token replaced successfully.</b>\n\nThe new token was verified and stored encrypted.",
+    "ru": "✅ <b>API-токен успешно заменён.</b>\n\nНовый токен проверен и сохранён в зашифрованном виде."
+  },
+  "Account ID باید دقیقاً ۳۲ کاراکتر هگزادسیمال باشد. لطفاً شناسه حساب را دوباره وارد کنید.": {
+    "en": "Account ID must contain exactly 32 hexadecimal characters. Please enter it again.",
+    "ru": "Account ID должен содержать ровно 32 шестнадцатеричных символа. Введите его ещё раз."
+  },
+  "URI target، مثال: <code>https://example.com/service</code> (Priority جدا پرسیده می‌شود)": {
+    "en": "URI target, e.g. <code>https://example.com/service</code> (Priority will be requested separately)",
+    "ru": "URI-адрес, например <code>https://example.com/service</code> (Priority запрашивается отдельно)"
+  },
+  "فرمت API Token درست نیست؛ فقط خود مقدار Token را کپی کن، بدون Bearer، فاصله یا خط جدید.": {
+    "en": "Invalid API Token format. Paste only the raw token, without Bearer, spaces or line breaks.",
+    "ru": "Неверный формат API-токена. Вставьте токен без Bearer, пробелов и переносов строк."
+  },
+  "Global API Key وارد شده است. از Cloudflare یک API Token بساز (نه Global API Key).": {
+    "en": "You entered a Global API Key. Create an API Token in Cloudflare instead.",
+    "ru": "Вы ввели Global API Key. Вместо него создайте API-токен в Cloudflare."
+  },
+  "🧹 <b>پاک‌سازی یک URL</b>\n\nآدرس کامل را همراه با <code>https://</code> ارسال کنید.": {
+    "en": "🧹 <b>Purge one URL</b>\n\nSend the full URL starting with <code>https://</code>.",
+    "ru": "🧹 <b>Очистить кэш одного URL</b>\n\nОтправьте полный адрес, начинающийся с <code>https://</code>."
+  },
+  "\">github.com/Net-spoof/cloudflare-telegram-manager</a>\n📢 <b>کانال:</b> <a href=\"": {
+    "en": "\">github.com/Net-spoof/cloudflare-telegram-manager</a>\n📢 <b>Channel:</b> <a href=\"",
+    "ru": "\">github.com/Net-spoof/cloudflare-telegram-manager</a>\n📢 <b>Канал:</b> <a href=\""
+  },
+  "</b>\nنوع رکورد را انتخاب کنید. سپس نام و مقدار آن را در مراحل بعد وارد می‌کنید.": {
+    "en": "</b>\nSelect a record type, then enter its name and value in the following steps.",
+    "ru": "</b>\nВыберите тип записи, затем укажите её имя и значение."
+  },
+  ". API Token یا قالب هدر Authorization معتبر نیست؛ فقط متن خام توکن را وارد کن.": {
+    "en": "The API Token or Authorization header format is invalid. Enter only the raw token.",
+    "ru": "Неверный API-токен или формат заголовка Authorization. Введите только значение токена."
+  },
+  "</b>\n🔐 توکن اعتبارسنجی و رمزنگاری شد. اکنون می‌توانید دامنه‌ها را مدیریت کنید.": {
+    "en": "</b>\n🔐 The token was verified and saved encrypted. You can now manage your zones.",
+    "ru": "</b>\n🔐 Токен проверен и сохранён в зашифрованном виде. Теперь можно управлять зонами."
+  },
+  "</code>\n\n⚠️ برای فعال‌سازی کامل، ممکن است ثبت DS در رجیسترار دامنه لازم باشد.": {
+    "en": "</code>\n\n⚠️ To fully enable DNSSEC, you may need to publish a DS record at your registrar.",
+    "ru": "</code>\n\n⚠️ Для полноценного включения DNSSEC может потребоваться DS-запись у регистратора."
+  },
+  "Mail server، مثال: <code>mail.example.com</code> (Priority جدا پرسیده می‌شود)": {
+    "en": "Mail server, e.g. <code>mail.example.com</code> (Priority is requested separately)",
+    "ru": "Почтовый сервер, например <code>mail.example.com</code> (Priority запрашивается отдельно)"
+  },
+  "دامنه‌ای در محدوده دسترسی این توکن پیدا نشد. مجوز Zone Read را بررسی کنید.": {
+    "en": "No zones were found in this token's scope. Check Zone Read permission.",
+    "ru": "В области действия токена не найдены зоны. Проверьте разрешение Zone Read."
+  },
+  "🟠 = پروکسی Cloudflare  |  ⚪ = فقط DNS\nبرای ویرایش، رکورد را انتخاب کنید.": {
+    "en": "🟠 = Cloudflare proxy  |  ⚪ = DNS only\nSelect a record to edit.",
+    "ru": "🟠 = Прокси Cloudflare  |  ⚪ = Только DNS\nВыберите запись для редактирования."
+  },
+  "فرمت LOC، مثال: <code>37 47 0.0 N 122 24 0.0 W 10m 1m 10000m 10m</code>": {
+    "en": "LOC format, e.g. <code>37 47 0.0 N 122 24 0.0 W 10m 1m 10000m 10m</code>",
+    "ru": "Формат LOC, пример: <code>37 47 0.0 N 122 24 0.0 W 10m 1m 10000m 10m</code>"
+  },
+  "مثال: <code>100 10 \"U\" \"E2U+sip\" \"!^.*$!sip:info@example.com!\" .</code>": {
+    "en": "Example: <code>100 10 \"U\" \"E2U+sip\" \"!^.*$!sip:info@example.com!\" .</code>",
+    "ru": "Пример: <code>100 10 \"U\" \"E2U+sip\" \"!^.*$!sip:info@example.com!\" .</code>"
+  },
+  "</b>\nاین عملیات تنظیمات ترافیک دامنه را تغییر می‌دهد. ادامه می‌دهید؟": {
+    "en": "</b>\nThis will change how traffic is handled for the zone. Continue?",
+    "ru": "</b>\nЭто изменит обработку трафика домена. Продолжить?"
+  },
+  "متن رکورد، مثال: <code>v=spf1 include:_spf.example.com ~all</code>": {
+    "en": "TXT content, e.g. <code>v=spf1 include:_spf.example.com ~all</code>",
+    "ru": "Содержимое TXT, пример: <code>v=spf1 include:_spf.example.com ~all</code>"
+  },
+  "🌐 <b>مدیریت دامنه‌ها</b>\n\nابتدا یک حساب Cloudflare متصل کنید.": {
+    "en": "🌐 <b>Zone management</b>\n\nConnect a Cloudflare account first.",
+    "ru": "🌐 <b>Управление доменами</b>\n\nСначала подключите аккаунт Cloudflare."
+  },
+  "🔒 ورود اطلاعات اتصال فقط در گفت‌وگوی خصوصی مجاز است. /start": {
+    "en": "🔒 Account credentials can only be entered in a private chat. /start",
+    "ru": "🔒 Данные аккаунта можно вводить только в личном чате. /start"
+  },
+  "Comment جدید را بفرست؛ برای پاک‌کردن <code>-</code> بفرست.": {
+    "en": "Send the new comment; send <code>-</code> to remove it.",
+    "ru": "Отправьте новый комментарий; отправьте <code>-</code>, чтобы удалить его."
+  },
+  "مثال: <code>1 svc.example.com alpn=\"h2,h3\" port=443</code>": {
+    "en": "Example: <code>1 svc.example.com alpn=\"h2,h3\" port=443</code>",
+    "ru": "Пример: <code>1 svc.example.com alpn=\"h2,h3\" port=443</code>"
+  },
+  "نام مقصد Reverse DNS، مثال: <code>host.example.com</code>": {
+    "en": "Reverse DNS target, e.g. <code>host.example.com</code>",
+    "ru": "Целевое имя Reverse DNS, пример: <code>host.example.com</code>"
+  },
+  "🔒 اتصال حساب و ورود توکن فقط در گفت‌وگوی خصوصی مجاز است.": {
+    "en": "🔒 Connect accounts and enter tokens only in a private chat.",
+    "ru": "🔒 Подключайте аккаунты и вводите токены только в личном чате."
+  },
+  "\">@NET_SPOOF</a>\n\n<i>این پروژه مستقل و غیررسمی است.</i>": {
+    "en": "\">@NET_SPOOF</a>\n\n<i>This is an independent, unofficial project.</i>",
+    "ru": "\">@NET_SPOOF</a>\n\n<i>Это независимый, неофициальный проект.</i>"
+  },
+  "TTL را بفرست: <code>1</code> برای Auto یا 60 تا 86400.": {
+    "en": "Send TTL: <code>1</code> for Auto or 60 to 86400.",
+    "ru": "Введите TTL: <code>1</code> для Auto или от 60 до 86400."
+  },
+  "فرمت CERT طبق RFC، مثال: <code>1 0 5 BASE64...</code>": {
+    "en": "CERT format per RFC, e.g. <code>1 0 5 BASE64...</code>",
+    "ru": "Формат CERT по RFC, пример: <code>1 0 5 BASE64...</code>"
+  },
+  "هنوز رکوردی وجود ندارد؛ از «ساخت رکورد» استفاده کنید.": {
+    "en": "No records yet; use “Create record” to add one.",
+    "ru": "Записей пока нет; используйте «Создать запись»."
+  },
+  "یک URL کامل و معتبر با https:// یا http:// وارد کنید.": {
+    "en": "Enter a valid full URL starting with https:// or http://.",
+    "ru": "Введите корректный полный URL, начинающийся с https:// или http://."
+  },
+  "فرمت CAA، مثال: <code>0 issue letsencrypt.org</code>": {
+    "en": "CAA format, e.g. <code>0 issue letsencrypt.org</code>",
+    "ru": "Формат CAA, пример: <code>0 issue letsencrypt.org</code>"
+  },
+  "فرمت HTTPS/SVCB، مثال: <code>1 . alpn=\"h2,h3\"</code>": {
+    "en": "HTTPS/SVCB format, e.g. <code>1 . alpn=\"h2,h3\"</code>",
+    "ru": "Формат HTTPS/SVCB, пример: <code>1 . alpn=\"h2,h3\"</code>"
+  },
+  "ℹ️ <b>Cloudflare Telegram Manager</b>\n🧩 نسخه: <code>": {
+    "en": "ℹ️ <b>Cloudflare Telegram Manager</b>\n🧩 Version: <code>",
+    "ru": "ℹ️ <b>Cloudflare Telegram Manager</b>\n🧩 Версия: <code>"
+  },
+  "⏱ اولویت (Priority) را با عدد ۰ تا ۶۵۵۳۵ ارسال کنید.": {
+    "en": "⏱ Send Priority as a number from 0 to 65535.",
+    "ru": "⏱ Введите Priority числом от 0 до 65535."
+  },
+  "🔒 ارسال فایل رکوردها فقط در گفت‌وگوی خصوصی مجاز است.": {
+    "en": "🔒 DNS record files can only be uploaded in a private chat.",
+    "ru": "🔒 Файлы DNS-записей можно отправлять только в личном чате."
+  },
+  "برای مدیریت DNS و تنظیمات، یک دامنه را انتخاب کنید.": {
+    "en": "Select a zone to manage its DNS and settings.",
+    "ru": "Выберите домен для управления DNS и настройками."
+  },
+  "فرمت DS، مثال: <code>12345 13 2 HEXDIGEST...</code>": {
+    "en": "DS format, e.g. <code>12345 13 2 HEXDIGEST...</code>",
+    "ru": "Формат DS, пример: <code>12345 13 2 HEXDIGEST...</code>"
+  },
+  "فرمت DNSKEY، مثال: <code>257 3 13 BASE64...</code>": {
+    "en": "DNSKEY format, e.g. <code>257 3 13 BASE64...</code>",
+    "ru": "Формат DNSKEY, пример: <code>257 3 13 BASE64...</code>"
+  },
+  "➕ <b>رکورد جدید | مرحله ۱ از ۲</b>\n\nنوع رکورد: <b>": {
+    "en": "➕ <b>New record | Step 1 of 2</b>\n\nRecord type: <b>",
+    "ru": "➕ <b>Новая запись | Шаг 1 из 2</b>\n\nТип записи: <b>"
+  },
+  "👤 <b>حساب‌های Cloudflare</b>\n\n📂 تعداد حساب‌ها: <b>": {
+    "en": "👤 <b>Cloudflare accounts</b>\n\n📂 Accounts: <b>",
+    "ru": "👤 <b>Аккаунты Cloudflare</b>\n\n📂 Аккаунтов: <b>"
+  },
+  "🧩 <b>مدیریت رکوردهای DNS</b>\n\n📋 تعداد رکوردها: <b>": {
+    "en": "🧩 <b>Manage DNS records</b>\n\n📋 Records: <b>",
+    "ru": "🧩 <b>Управление DNS-записями</b>\n\n📋 Записей: <b>"
+  },
+  "برای مدیریت یا تست اتصال، یک حساب را انتخاب کنید.": {
+    "en": "Select an account to manage it or test connectivity.",
+    "ru": "Выберите аккаунт для управления или проверки подключения."
+  },
+  "هنوز حسابی متصل نشده است. با دکمه زیر شروع کنید.": {
+    "en": "No accounts connected. Start with the button below.",
+    "ru": "Аккаунты ещё не подключены. Начните с кнопки ниже."
+  },
+  "❌ <b>تست اتصال Cloudflare ناموفق بود</b>\n\n<code>": {
+    "en": "❌ <b>Cloudflare connection test failed</b>\n\n<code>",
+    "ru": "❌ <b>Проверка подключения Cloudflare не прошла</b>\n\n<code>"
+  },
+  "🔎 بخشی از نام، IP/Content یا نوع رکورد را بفرست.": {
+    "en": "🔎 Send part of a name, IP/content or record type.",
+    "ru": "🔎 Отправьте часть имени, IP/содержимого или тип записи."
+  },
+  "Name server، مثال: <code>ns1.example.com</code>": {
+    "en": "Name server, e.g. <code>ns1.example.com</code>",
+    "ru": "DNS-сервер, например <code>ns1.example.com</code>"
+  },
+  "نام مقصد، مثال: <code>target.example.com</code>": {
+    "en": "Target hostname, e.g. <code>target.example.com</code>",
+    "ru": "Имя целевого хоста, например <code>target.example.com</code>"
+  },
+  "⚠️ حجم فایل BIND نباید بیشتر از ۲ مگابایت باشد.": {
+    "en": "⚠️ The BIND file must not exceed 2 MB.",
+    "ru": "⚠️ Размер файла BIND не должен превышать 2 МБ."
+  },
+  "\n\nیکی از بخش‌های مدیریت دامنه را انتخاب کنید.": {
+    "en": "\n\nSelect a zone-management section.",
+    "ru": "\n\nВыберите раздел управления доменом."
+  },
+  "✅ <b>حساب Cloudflare متصل شد!</b>\n\n👤 نام: <b>": {
+    "en": "✅ <b>Cloudflare account connected!</b>\n\n👤 Name: <b>",
+    "ru": "✅ <b>Аккаунт Cloudflare подключён!</b>\n\n👤 Название: <b>"
+  },
+  "TTL باید ۱ (خودکار) یا عدد ۶۰ تا ۸۶۴۰۰ باشد.": {
+    "en": "TTL must be 1 (Auto) or a number between 60 and 86400.",
+    "ru": "TTL должен быть равен 1 (Auto) или числу от 60 до 86400."
+  },
+  "\">Net-spoof</a>\n📦 <b>گیت‌هاب:</b> <a href=\"": {
+    "en": "\">Net-spoof</a>\n📦 <b>GitHub:</b> <a href=\"",
+    "ru": "\">Net-spoof</a>\n📦 <b>GitHub:</b> <a href=\""
+  },
+  "👤 <b>جزئیات حساب Cloudflare</b>\n\n🏷 نام: <b>": {
+    "en": "👤 <b>Cloudflare account details</b>\n\n🏷 Name: <b>",
+    "ru": "👤 <b>Данные аккаунта Cloudflare</b>\n\n🏷 Название: <b>"
+  },
+  "🔎 <b>نتایج جستجوی سراسری</b>\n\nتعداد نتیجه: ": {
+    "en": "🔎 <b>Global DNS search results</b>\n\nMatches: ",
+    "ru": "🔎 <b>Результаты общего поиска DNS</b>\n\nНайдено: "
+  },
+  "اتصال حساب فقط در گفت‌وگوی خصوصی مجاز است.": {
+    "en": "Account connection is only allowed in a private chat.",
+    "ru": "Подключение аккаунта разрешено только в личном чате."
+  },
+  "تعویض توکن فقط در گفت‌وگوی خصوصی مجاز است.": {
+    "en": "Token replacement is only allowed in a private chat.",
+    "ru": "Замена токена разрешена только в личном чате."
+  },
+  "⚠️ <b>تأیید قطع اتصال حساب</b>\n\nحساب: <b>": {
+    "en": "⚠️ <b>Confirm account disconnection</b>\n\nAccount: <b>",
+    "ru": "⚠️ <b>Подтвердите отключение аккаунта</b>\n\nАккаунт: <b>"
+  },
+  "✅ <b>رکورد DNS ساخته شد.</b>\n\n🧩 نوع: <b>": {
+    "en": "✅ <b>DNS record created.</b>\n\n🧩 Type: <b>",
+    "ru": "✅ <b>DNS-запись создана.</b>\n\n🧩 Тип: <b>"
+  },
+  "🔎 <b>نتایج جستجوی DNS</b>\n\nتعداد نتیجه: ": {
+    "en": "🔎 <b>DNS search results</b>\n\nMatches: ",
+    "ru": "🔎 <b>Результаты поиска DNS</b>\n\nНайдено: "
+  },
+  "🔐 <b>تنظیمات DNSSEC</b>\n\n📡 وضعیت: <code>": {
+    "en": "🔐 <b>DNSSEC settings</b>\n\n📡 Status: <code>",
+    "ru": "🔐 <b>Настройки DNSSEC</b>\n\n📡 Статус: <code>"
+  },
+  "نام حساب باید بین ۱ تا ۶۰ کاراکتر باشد.": {
+    "en": "Account name must be 1–60 characters long.",
+    "ru": "Название аккаунта должно содержать от 1 до 60 символов."
+  },
+  "</code>\n\nاکانت و رکوردها پاک نشده‌اند.": {
+    "en": "</code>\n\nThe account and its DNS records were not deleted.",
+    "ru": "</code>\n\nАккаунт и DNS-записи не удалены."
+  },
+  "IPv4، مثال: <code>176.65.151.51</code>": {
+    "en": "IPv4, e.g. <code>176.65.151.51</code>",
+    "ru": "IPv4, например <code>176.65.151.51</code>"
+  },
+  "☁️ <b>Cloudflare Manager</b>  |  نسخه ": {
+    "en": "☁️ <b>Cloudflare Manager</b>  |  Version ",
+    "ru": "☁️ <b>Cloudflare Manager</b>  |  Версия "
+  },
+  "🌐 <b>مدیریت دامنه‌ها</b>\n\n👤 حساب: <b>": {
+    "en": "🌐 <b>Zone management</b>\n\n👤 Account: <b>",
+    "ru": "🌐 <b>Управление доменами</b>\n\n👤 Аккаунт: <b>"
+  },
+  "IPv6، مثال: <code>2001:db8::1</code>": {
+    "en": "IPv6, e.g. <code>2001:db8::1</code>",
+    "ru": "IPv6, например <code>2001:db8::1</code>"
+  },
+  "🔐 <b>تعویض API Token</b>\n\nاکانت: <b>": {
+    "en": "🔐 <b>Replace API Token</b>\n\nAccount: <b>",
+    "ru": "🔐 <b>Замена API-токена</b>\n\nАккаунт: <b>"
+  },
+  "برای رکورد AAAA باید IPv6 وارد شود.": {
+    "en": "An AAAA record requires IPv6.",
+    "ru": "Для записи AAAA требуется IPv6."
+  },
+  "\n━━━━━━━━━━━━━━━━\n👤 حساب فعال: <b>": {
+    "en": "\n━━━━━━━━━━━━━━━━\n👤 Active account: <b>",
+    "ru": "\n━━━━━━━━━━━━━━━━\n👤 Активный аккаунт: <b>"
+  },
+  "➕ <b>ساخت رکورد DNS</b>\n\nدسته: <b>": {
+    "en": "➕ <b>Create DNS record</b>\n\nCategory: <b>",
+    "ru": "➕ <b>Создать DNS-запись</b>\n\nКатегория: <b>"
+  },
+  "OpenPGP public key به صورت Base64": {
+    "en": "OpenPGP public key in Base64",
+    "ru": "Публичный ключ OpenPGP в Base64"
+  },
+  "Priority باید بین ۰ و ۶۵۵۳۵ باشد.": {
+    "en": "Priority must be between 0 and 65535.",
+    "ru": "Priority должен быть от 0 до 65535."
+  },
+  "⚠️ حجم فایل بیشتر از حد مجاز است.": {
+    "en": "⚠️ The file exceeds the size limit.",
+    "ru": "⚠️ Файл превышает допустимый размер."
+  },
+  "❌ <b>خطای اتصال/عملیات</b>\n<code>": {
+    "en": "❌ <b>Connection/operation error</b>\n<code>",
+    "ru": "❌ <b>Ошибка подключения или операции</b>\n<code>"
+  },
+  "برای رکورد A باید IPv4 وارد شود.": {
+    "en": "An A record requires IPv4.",
+    "ru": "Для записи A требуется IPv4."
+  },
+  "مثال: <code>3 1 1 HEX...</code>": {
+    "en": "Example: <code>3 1 1 HEX...</code>",
+    "ru": "Пример: <code>3 1 1 HEX...</code>"
+  },
+  "مقدار جدید نمی‌تواند خالی باشد.": {
+    "en": "New value cannot be empty.",
+    "ru": "Новое значение не может быть пустым."
+  },
+  "✅ اطلاعات اکانت از ربات حذف شد.": {
+    "en": "✅ The account was removed from this bot.",
+    "ru": "✅ Аккаунт удалён из бота."
+  },
+  "🌐 باز کردن داشبورد Cloudflare": {
+    "en": "🌐 Open Cloudflare dashboard",
+    "ru": "🌐 Открыть панель Cloudflare"
+  },
+  "این گزینه Toggle ساده نیست: ": {
+    "en": "This setting cannot be toggled: ",
+    "ru": "Этот параметр нельзя переключить: "
+  },
+  "مقدار/Content جدید را بفرست.": {
+    "en": "Send the new record value/content.",
+    "ru": "Отправьте новое значение записи."
+  },
+  "✅ Import انجام شد.\nRecords: ": {
+    "en": "✅ Import completed.\nRecords: ",
+    "ru": "✅ Импорт завершён.\nЗаписей: "
+  },
+  "✅ رکورد با موفقیت ویرایش شد.": {
+    "en": "✅ Record updated successfully.",
+    "ru": "✅ Запись успешно обновлена."
+  },
+  "✅ کش دامنه با موفقیت پاک شد.": {
+    "en": "✅ Zone cache purged successfully.",
+    "ru": "✅ Кэш домена успешно очищен."
+  },
+  "👤 مدیریت حساب‌های Cloudflare": {
+    "en": "👤 Manage Cloudflare accounts",
+    "ru": "👤 Управление аккаунтами Cloudflare"
+  },
+  "</code>\n⏸ توقف موقت: <code>": {
+    "en": "</code>\n⏸ Paused: <code>",
+    "ru": "</code>\n⏸ Приостановлен: <code>"
+  },
+  "✅ انتخاب به‌عنوان حساب فعال": {
+    "en": "✅ Set as active account",
+    "ru": "✅ Сделать активным аккаунтом"
+  },
+  "</code>\n🔢 الگوریتم: <code>": {
+    "en": "</code>\n🔢 Algorithm: <code>",
+    "ru": "</code>\n🔢 Алгоритм: <code>"
+  },
+  "این حساب از قبل فعال است.": {
+    "en": "This account is already active.",
+    "ru": "Этот аккаунт уже активен."
+  },
+  "✅ کش آدرس موردنظر پاک شد.": {
+    "en": "✅ The URL cache was purged.",
+    "ru": "✅ Кэш URL успешно очищен."
+  },
+  "📖 راهنمای استفاده از ربات": {
+    "en": "📖 Bot user guide",
+    "ru": "📖 Руководство пользователя"
+  },
+  "2️⃣ پیدا کردن Account ID": {
+    "en": "2️⃣ Find Account ID",
+    "ru": "2️⃣ Узнать Account ID"
+  },
+  "نام جدید رکورد را بفرست.": {
+    "en": "Send the new record name.",
+    "ru": "Отправьте новое имя записи."
+  },
+  "🔗 پاک‌سازی یک آدرس (URL)": {
+    "en": "🔗 Purge one URL",
+    "ru": "🔗 Очистить кэш одного URL"
+  },
+  "</code>\n🆔 شناسه: <code>": {
+    "en": "</code>\n🆔 ID: <code>",
+    "ru": "</code>\n🆔 ID: <code>"
+  },
+  "</code>\n🎯 مقدار: <code>": {
+    "en": "</code>\n🎯 Value: <code>",
+    "ru": "</code>\n🎯 Значение: <code>"
+  },
+  "ℹ️ درباره ربات و سازنده": {
+    "en": "ℹ️ About the bot and developer",
+    "ru": "ℹ️ О боте и разработчике"
+  },
+  "▶️ فعال‌سازی مجدد دامنه": {
+    "en": "▶️ Resume zone",
+    "ru": "▶️ Возобновить домен"
+  },
+  "✅ عملیات جاری لغو شد.\n\n": {
+    "en": "✅ Current operation cancelled.\n\n",
+    "ru": "✅ Текущая операция отменена.\n\n"
+  },
+  "🔄 تغییر وضعیت پروکسی | ": {
+    "en": "🔄 Toggle proxy | ",
+    "ru": "🔄 Переключить прокси | "
+  },
+  "🛡️ تنظیمات امنیتی و SSL": {
+    "en": "🛡️ Security & SSL settings",
+    "ru": "🛡️ Безопасность и SSL"
+  },
+  " دامنه</b>\n\nدامنه: <b>": {
+    "en": " zone</b>\n\nZone: <b>",
+    "ru": " домена</b>\n\nДомен: <b>"
+  },
+  "حساب موردنظر پیدا نشد.": {
+    "en": "The requested account was not found.",
+    "ru": "Запрошенный аккаунт не найден."
+  },
+  "🔑 تعویض API اکانت فعال": {
+    "en": "🔑 Replace active account API Token",
+    "ru": "🔑 Заменить API-токен активного аккаунта"
+  },
+  "</b>\n\n📡 وضعیت: <code>": {
+    "en": "</b>\n\n📡 Status: <code>",
+    "ru": "</b>\n\n📡 Статус: <code>"
+  },
+  "</b>\n🟢 حساب فعال: <b>": {
+    "en": "</b>\n🟢 Active account: <b>",
+    "ru": "</b>\n🟢 Активный аккаунт: <b>"
+  },
+  "</code>\n⏸ توقف موقت: ": {
+    "en": "</code>\n⏸ Paused: ",
+    "ru": "</code>\n⏸ Приостановлен: "
+  },
+  "</code>\n💎 پلن: <code>": {
+    "en": "</code>\n💎 Plan: <code>",
+    "ru": "</code>\n💎 Тариф: <code>"
+  },
+  "</code>\n📂 نوع: <code>": {
+    "en": "</code>\n📂 Type: <code>",
+    "ru": "</code>\n📂 Тип: <code>"
+  },
+  "مقدار رکورد را بفرست.": {
+    "en": "Send the record value.",
+    "ru": "Отправьте значение записи."
+  },
+  "👤 حساب‌های Cloudflare": {
+    "en": "👤 Cloudflare accounts",
+    "ru": "👤 Аккаунты Cloudflare"
+  },
+  "3️⃣ ثبت حساب در ربات": {
+    "en": "3️⃣ Add account in Telegram",
+    "ru": "3️⃣ Добавить аккаунт в Telegram"
+  },
+  "</b>\n📂 دامنه‌ها: <b>": {
+    "en": "</b>\n📂 Zones: <b>",
+    "ru": "</b>\n📂 Доменов: <b>"
+  },
+  "حساب فعال تغییر کرد.": {
+    "en": "Active account changed.",
+    "ru": "Активный аккаунт изменён."
+  },
+  "ℹ️ <b>اطلاعات دامنه ": {
+    "en": "ℹ️ <b>Zone information: ",
+    "ru": "ℹ️ <b>Сведения о домене: "
+  },
+  "📖 راهنمای اتصال حساب": {
+    "en": "📖 Account connection guide",
+    "ru": "📖 Инструкция по подключению"
+  },
+  "📖 راهنمای گام‌به‌گام": {
+    "en": "📖 Step-by-step guide",
+    "ru": "📖 Пошаговая инструкция"
+  },
+  "🔄 تغییر وضعیت DNSSEC": {
+    "en": "🔄 Change DNSSEC status",
+    "ru": "🔄 Изменить статус DNSSEC"
+  },
+  "🔥 بله، پاک‌سازی کامل": {
+    "en": "🔥 Yes, purge all cache",
+    "ru": "🔥 Да, очистить весь кэш"
+  },
+  "</b>\n\n📛 نام: <code>": {
+    "en": "</b>\n\n📛 Name: <code>",
+    "ru": "</b>\n\n📛 Имя: <code>"
+  },
+  "✅ تأیید تغییر وضعیت": {
+    "en": "✅ Confirm status change",
+    "ru": "✅ Подтвердить изменение статуса"
+  },
+  "\n💬 توضیحات: <code>": {
+    "en": "\n💬 Comment: <code>",
+    "ru": "\n💬 Комментарий: <code>"
+  },
+  "1️⃣ ساخت API Token": {
+    "en": "1️⃣ Create API Token",
+    "ru": "1️⃣ Создать API-токен"
+  },
+  "</b>\n📛 نام: <code>": {
+    "en": "</b>\n📛 Name: <code>",
+    "ru": "</b>\n📛 Имя: <code>"
+  },
+  "</code>\n☁️ وضعیت: ": {
+    "en": "</code>\n☁️ Status: ",
+    "ru": "</code>\n☁️ Статус: "
+  },
+  "↩️ بازگشت به دامنه": {
+    "en": "↩️ Back to zone",
+    "ru": "↩️ Назад к домену"
+  },
+  "↩️ بازگشت به رکورد": {
+    "en": "↩️ Back to record",
+    "ru": "↩️ Назад к записи"
+  },
+  "✅ بله، اعمال تغییر": {
+    "en": "✅ Yes, apply change",
+    "ru": "✅ Да, применить"
+  },
+  "➕ افزودن حساب جدید": {
+    "en": "➕ Add another account",
+    "ru": "➕ Добавить аккаунт"
+  },
+  "🔗 اتصال اولین حساب": {
+    "en": "🔗 Connect first account",
+    "ru": "🔗 Подключить первый аккаунт"
+  },
+  "🔥 پاک‌سازی تمام کش": {
+    "en": "🔥 Purge entire cache",
+    "ru": "🔥 Очистить весь кэш"
+  },
+  "🛠 عیب‌یابی و خطاها": {
+    "en": "🛠 Troubleshooting & errors",
+    "ru": "🛠 Ошибки и устранение неполадок"
+  },
+  "🧩 <b>جزئیات رکورد ": {
+    "en": "🧩 <b>Record details: ",
+    "ru": "🧩 <b>Сведения о записи: "
+  },
+  "فشرده‌سازی Brotli": {
+    "en": "Brotli compression",
+    "ru": "Сжатие Brotli"
+  },
+  "↩️ بازگشت به حساب": {
+    "en": "↩️ Back to account",
+    "ru": "↩️ Назад к аккаунту"
+  },
+  "↩️ فهرست دامنه‌ها": {
+    "en": "↩️ Zone list",
+    "ru": "↩️ Список доменов"
+  },
+  "⏸ توقف موقت دامنه": {
+    "en": "⏸ Pause zone",
+    "ru": "⏸ Приостановить домен"
+  },
+  "❌ لغو عملیات جاری": {
+    "en": "❌ Cancel current operation",
+    "ru": "❌ Отменить текущую операцию"
+  },
+  "🌐 مدیریت دامنه‌ها": {
+    "en": "🌐 Manage zones",
+    "ru": "🌐 Управление доменами"
+  },
+  "👨‍💻 GitHub سازنده": {
+    "en": "👨‍💻 Developer on GitHub",
+    "ru": "👨‍💻 Разработчик на GitHub"
+  },
+  "📋 نمایش منوی اصلی": {
+    "en": "📋 Open main menu",
+    "ru": "📋 Открыть главное меню"
+  },
+  "📢 کانال Net Spoof": {
+    "en": "📢 Net Spoof channel",
+    "ru": "📢 Канал Net Spoof"
+  },
+  "🔑 تعویض API Token": {
+    "en": "🔑 Replace API Token",
+    "ru": "🔑 Заменить API-токен"
+  },
+  "🔑 صفحه API Tokens": {
+    "en": "🔑 API Tokens page",
+    "ru": "🔑 Страница API Tokens"
+  },
+  "🗑 تأیید قطع اتصال": {
+    "en": "🗑 Confirm disconnection",
+    "ru": "🗑 Подтвердить отключение"
+  },
+  "🗑 قطع اتصال و حذف": {
+    "en": "🗑 Disconnect & remove",
+    "ru": "🗑 Отключить и удалить"
+  },
+  "</b>\n📄 صفحه: <b>": {
+    "en": "</b>\n📄 Page: <b>",
+    "ru": "</b>\n📄 Страница: <b>"
+  },
+  "</b> را بفرست.\n\n": {
+    "en": "</b>.\n\nSend the value.\n\n",
+    "ru": "</b>.\n\nОтправьте значение.\n\n"
+  },
+  "↩️ فهرست رکوردها": {
+    "en": "↩️ Record list",
+    "ru": "↩️ Список записей"
+  },
+  "⛔ دسترسی ندارید.": {
+    "en": "⛔ Access denied.",
+    "ru": "⛔ Доступ запрещён."
+  },
+  "</b>\n\n📡 وضعیت: ": {
+    "en": "</b>\n\n📡 Status: ",
+    "ru": "</b>\n\n📡 Статус: "
+  },
+  "Export آماده شد": {
+    "en": "Export is ready",
+    "ru": "Экспорт готов"
+  },
+  "ℹ️ جزئیات دامنه": {
+    "en": "ℹ️ Zone details",
+    "ru": "ℹ️ Сведения о домене"
+  },
+  "↩️ لغو و بازگشت": {
+    "en": "↩️ Cancel & go back",
+    "ru": "↩️ Отмена и назад"
+  },
+  "✅ رکورد حذف شد.": {
+    "en": "✅ Record deleted.",
+    "ru": "✅ Запись удалена."
+  },
+  "📖 راهنمای اتصال": {
+    "en": "📖 Connection guide",
+    "ru": "📖 Инструкция по подключению"
+  },
+  "\n💎 پلن: <code>": {
+    "en": "\n💎 Plan: <code>",
+    "ru": "\n💎 Тариф: <code>"
+  },
+  "</b>\n📡 وضعیت: ": {
+    "en": "</b>\n📡 Status: ",
+    "ru": "</b>\n📡 Статус: "
+  },
+  "اکانت پیدا نشد": {
+    "en": "Account not found",
+    "ru": "Аккаунт не найден"
+  },
+  "اکانت یافت نشد": {
+    "en": "Account was not found",
+    "ru": "Аккаунт не найден"
+  },
+  "بازنویسی HTTPS": {
+    "en": "Automatic HTTPS rewrites",
+    "ru": "Автоматическая замена HTTPS"
+  },
+  "دسترسی ندارید.": {
+    "en": "Access denied.",
+    "ru": "Доступ запрещён."
+  },
+  "فعال‌سازی مجدد": {
+    "en": "Resume",
+    "ru": "Возобновить"
+  },
+  "ℹ️ درباره ربات": {
+    "en": "ℹ️ About the bot",
+    "ru": "ℹ️ О боте"
+  },
+  "↩️ همه حساب‌ها": {
+    "en": "↩️ All accounts",
+    "ru": "↩️ Все аккаунты"
+  },
+  "🎯 ویرایش مقدار": {
+    "en": "🎯 Edit value",
+    "ru": "🎯 Изменить значение"
+  },
+  "📖 فهرست راهنما": {
+    "en": "📖 Guide overview",
+    "ru": "📖 Оглавление инструкции"
+  },
+  "📥 ورود رکوردها": {
+    "en": "📥 Import records",
+    "ru": "📥 Импорт записей"
+  },
+  "🔎 جستجوی رکورد": {
+    "en": "🔎 Search records",
+    "ru": "🔎 Поиск записей"
+  },
+  "🧩 رکوردهای DNS": {
+    "en": "🧩 DNS records",
+    "ru": "🧩 DNS-записи"
+  },
+  "حساب پیدا نشد": {
+    "en": "Account not found",
+    "ru": "Аккаунт не найден"
+  },
+  "✏️ ویرایش نام": {
+    "en": "✏️ Edit name",
+    "ru": "✏️ Изменить имя"
+  },
+  "❌ خطا: <code>": {
+    "en": "❌ Error: <code>",
+    "ru": "❌ Ошибка: <code>"
+  },
+  "👤 حساب‌های من": {
+    "en": "👤 My accounts",
+    "ru": "👤 Мои аккаунты"
+  },
+  "👤 مشاهده حساب": {
+    "en": "👤 View account",
+    "ru": "👤 Посмотреть аккаунт"
+  },
+  "🟠 پروکسی فعال": {
+    "en": "🟠 Proxy enabled",
+    "ru": "🟠 Прокси включён"
+  },
+  "↩️ مدیریت کش": {
+    "en": "↩️ Cache management",
+    "ru": "↩️ Управление кэшем"
+  },
+  "⚠️ <b>تأیید ": {
+    "en": "⚠️ <b>Confirm ",
+    "ru": "⚠️ <b>Подтвердите "
+  },
+  "❌ لغو عملیات": {
+    "en": "❌ Cancel operation",
+    "ru": "❌ Отменить операцию"
+  },
+  "➕ ساخت رکورد": {
+    "en": "➕ Create record",
+    "ru": "➕ Создать запись"
+  },
+  "⬅️ منوی اصلی": {
+    "en": "⬅️ Main menu",
+    "ru": "⬅️ Главное меню"
+  },
+  "📦 سورس پروژه": {
+    "en": "📦 Project source",
+    "ru": "📦 Исходный код"
+  },
+  "🔎 جستجوی DNS": {
+    "en": "🔎 DNS search",
+    "ru": "🔎 Поиск DNS"
+  },
+  "🔗 اتصال حساب": {
+    "en": "🔗 Connect account",
+    "ru": "🔗 Подключить аккаунт"
+  },
+  "اجبار HTTPS": {
+    "en": "Always use HTTPS",
+    "ru": "Всегда использовать HTTPS"
+  },
+  "⏱ تغییر TTL": {
+    "en": "⏱ Change TTL",
+    "ru": "⏱ Изменить TTL"
+  },
+  "⬅️ اکانت‌ها": {
+    "en": "⬅️ Accounts",
+    "ru": "⬅️ Аккаунты"
+  },
+  "🎯 مقدار <b>": {
+    "en": "🎯 Send the value for <b>",
+    "ru": "🎯 Отправьте значение для <b>"
+  },
+  "🏠 منوی اصلی": {
+    "en": "🏠 Main menu",
+    "ru": "🏠 Главное меню"
+  },
+  "📤 خروجی DNS": {
+    "en": "📤 Export DNS",
+    "ru": "📤 Экспорт DNS"
+  },
+  "🔄 تازه‌سازی": {
+    "en": "🔄 Refresh",
+    "ru": "🔄 Обновить"
+  },
+  "🔑 تعویض API": {
+    "en": "🔑 Replace API",
+    "ru": "🔑 Заменить API"
+  },
+  "🗑 حذف رکورد": {
+    "en": "🗑 Delete record",
+    "ru": "🗑 Удалить запись"
+  },
+  "🧪 تست اتصال": {
+    "en": "🧪 Test connection",
+    "ru": "🧪 Проверить подключение"
+  },
+  "🧹 مدیریت کش": {
+    "en": "🧹 Cache management",
+    "ru": "🧹 Управление кэшем"
+  },
+  "↩️ رکوردها": {
+    "en": "↩️ Records",
+    "ru": "↩️ Записи"
+  },
+  "⬅️ رکوردها": {
+    "en": "⬅️ Records",
+    "ru": "⬅️ Записи"
+  },
+  "👤 اکانت‌ها": {
+    "en": "👤 Accounts",
+    "ru": "👤 Аккаунты"
+  },
+  "🗑 حذف قطعی": {
+    "en": "🗑 Delete permanently",
+    "ru": "🗑 Удалить навсегда"
+  },
+  "توقف موقت": {
+    "en": "Paused",
+    "ru": "Приостановлен"
+  },
+  "↩️ انصراف": {
+    "en": "↩️ Cancel",
+    "ru": "↩️ Отмена"
+  },
+  "⚪ غیرفعال": {
+    "en": "⚪ Inactive",
+    "ru": "⚪ Неактивен"
+  },
+  "⚪ فقط DNS": {
+    "en": "⚪ DNS only",
+    "ru": "⚪ Только DNS"
+  },
+  "👤 حساب‌ها": {
+    "en": "👤 Accounts",
+    "ru": "👤 Аккаунты"
+  },
+  "💬 توضیحات": {
+    "en": "💬 Comments",
+    "ru": "💬 Комментарии"
+  },
+  "🧩 پیشرفته": {
+    "en": "🧩 Advanced",
+    "ru": "🧩 Дополнительно"
+  },
+  "⬅️ برگشت": {
+    "en": "⬅️ Back",
+    "ru": "⬅️ Назад"
+  },
+  "📖 راهنما": {
+    "en": "📖 Guide",
+    "ru": "📖 Руководство"
+  },
+  "🔐 امنیتی": {
+    "en": "🔐 Security",
+    "ru": "🔐 Безопасность"
+  },
+  "بعدی ▶️": {
+    "en": "Next ▶️",
+    "ru": "Далее ▶️"
+  },
+  "◀️ قبلی": {
+    "en": "◀️ Previous",
+    "ru": "◀️ Назад"
+  },
+  "🔎 جستجو": {
+    "en": "🔎 Search",
+    "ru": "🔎 Поиск"
+  },
+  "نامشخص": {
+    "en": "Unknown",
+    "ru": "Неизвестно"
+  },
+  "⭐ رایج": {
+    "en": "⭐ Common",
+    "ru": "⭐ Основные"
+  },
+  "🏠 خانه": {
+    "en": "🏠 Home",
+    "ru": "🏠 Главная"
+  },
+  "🟢 فعال": {
+    "en": "🟢 Active",
+    "ru": "🟢 Активен"
+  },
+  "ندارد": {
+    "en": "None",
+    "ru": "Нет"
+  },
+  "❌ لغو": {
+    "en": "❌ Cancel",
+    "ru": "❌ Отмена"
+  },
+  " از ": {
+    "en": " of ",
+    "ru": " из "
+  },
+  "بله": {
+    "en": "Yes",
+    "ru": "Да"
+  },
+  "خیر": {
+    "en": "No",
+    "ru": "Нет"
+  },
+  "🌐 انتخاب زبان": {
+    "en": "🌐 Choose language",
+    "ru": "🌐 Выбрать язык"
+  },
+  "\n/language — انتخاب زبان": {
+    "en": "\n/language — Choose language",
+    "ru": "\n/language — Выбор языка"
+  },
+  "\n/menu — منوی اصلی": {
+    "en": "\n/menu — Main menu",
+    "ru": "\n/menu — Главное меню"
+  },
+  "🔒 زبان را در گفت‌وگوی خصوصی تغییر دهید.": {
+    "en": "🔒 Change language in a private chat.",
+    "ru": "🔒 Изменяйте язык в личном чате."
+  },
+  "❌ زبان انتخاب‌شده معتبر نیست.": {
+    "en": "❌ Invalid language selection.",
+    "ru": "❌ Выбран недопустимый язык."
+  },
+  "🇮🇷 فارسی": {
+    "en": "🇮🇷 فارسی",
+    "ru": "🇮🇷 فارسی"
+  },
+  "📖 <b>راهنمای ربات Cloudflare</b>\n\nبرای مدیریت حساب‌ها و DNS از /start استفاده کنید. آموزش قدم‌به‌قدم اتصال در دکمه «راهنمای اتصال» موجود است.\n\nفرمان‌ها:\n/start — منوی اصلی\n/accounts — مدیریت حساب‌ها\n/about — درباره ربات\n/help — راهنما\n/cancel — لغو عملیات\n/language — انتخاب زبان\n/menu — منوی اصلی": {
+    "en": "📖 <b>Cloudflare bot help</b>\n\nUse /start to manage accounts and DNS. Open “Connection guide” for step-by-step setup.\n\nCommands:\n/start — Main menu\n/accounts — Manage accounts\n/about — About the bot\n/help — Help\n/cancel — Cancel operation\n/language — Choose language\n/menu — Main menu",
+    "ru": "📖 <b>Справка бота Cloudflare</b>\n\nИспользуйте /start для управления аккаунтами и DNS. Пошаговая инструкция доступна в разделе «Руководство по подключению».\n\nКоманды:\n/start — Главное меню\n/accounts — Управление аккаунтами\n/about — О боте\n/help — Помощь\n/cancel — Отмена операции\n/language — Выбор языка\n/menu — Главное меню"
+  },
+  "🌐 <b>زبان ربات</b>\n\nزبان دلخواهت رو انتخاب کن. این تنظیم بعد از ری‌استارت هم حفظ می‌شه.": {
+    "en": "🌐 <b>Bot language</b>\n\nChoose your preferred language. Your selection is saved across restarts.",
+    "ru": "🌐 <b>Язык бота</b>\n\nВыберите язык интерфейса. Настройка сохранится после перезапуска."
+  },
+  "✅ زبان ربات با موفقیت تغییر کرد.\n\n": {
+    "en": "✅ Bot language updated successfully.\n\n",
+    "ru": "✅ Язык бота успешно изменён.\n\n"
+  }
+}

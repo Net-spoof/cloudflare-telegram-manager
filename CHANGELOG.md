@@ -1,8 +1,14 @@
 # Cloudflare Telegram Manager — Current Release
 
-## v2.7.2 · 19 November 2026
+## v2.8.0 · 19 November 2026
 
 **This is the current supported release.** The repository maintains one active release entry; earlier development milestones are available only in Git history.
+
+### Multilingual interface
+- Added `/language` and a main-menu language selector with **Persian, English and Russian**.
+- Localized Telegram menus, DNS workflows, connection help, errors, confirmations and command descriptions.
+- Language preferences are stored per Telegram administrator in SQLite and survive restarts.
+- Added language-specific command-menu descriptions and offline localization regressions.
 
 ### Features
 - Self-hosted Telegram management of multiple Cloudflare accounts and zones.

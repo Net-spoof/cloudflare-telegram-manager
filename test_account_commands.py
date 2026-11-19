@@ -17,12 +17,21 @@ selected = [node for node in tree.body if isinstance(node, (ast.FunctionDef, ast
 assert len(selected) == len(names), 'Missing a function required for account/about commands'
 
 main = next(node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == 'main')
+def handler_name(node):
+    if isinstance(node, ast.Name):
+        return node.id
+    if (isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
+            and node.func.id == 'localized_handler'
+            and node.args and isinstance(node.args[0], ast.Name)):
+        return node.args[0].id
+    return None
+
 handlers = {
-    node.args[0].value: node.args[1].id
+    node.args[0].value: handler_name(node.args[1])
     for node in ast.walk(main)
     if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
     and node.func.id == 'CommandHandler' and len(node.args) >= 2
-    and isinstance(node.args[0], ast.Constant) and isinstance(node.args[1], ast.Name)
+    and isinstance(node.args[0], ast.Constant)
 }
 assert handlers['accounts'] == 'accounts_command'
 assert handlers['about'] == 'about_command'
@@ -53,6 +62,8 @@ access = {'allowed': True, 'denied': 0}
 async def deny(update): access['denied'] += 1
 async def safe_edit(query, message, **kw): query.messages.append((message, kw))
 async def ignored(*args, **kw): return None
+async def localized_reply(msg, text, **kw): return await msg.reply_text(text, **kw)
+async def localized_answer(q, text=None, **kw): return await q.answer(text, **kw)
 
 ns = {
     'list_accounts': lambda: accounts,
@@ -62,6 +73,7 @@ ns = {
     'Update': object, 'ContextTypes': SimpleNamespace(DEFAULT_TYPE=object),
     'is_admin': lambda update: access['allowed'],
     'deny': deny, 'safe_edit': safe_edit,
+    'localized_reply':localized_reply, 'localized_answer':localized_answer,
     'decode_callback_data': lambda s: s,
     'is_private_chat': lambda update: True,
     'active_account': lambda: accounts[0] if accounts else None,
