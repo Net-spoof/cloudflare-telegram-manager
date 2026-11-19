@@ -88,7 +88,7 @@ with tempfile.TemporaryDirectory() as td:
         'InlineKeyboardMarkup': Keyboard, 'InlineKeyboardButton': Button,
         'BotCommand': Command, 'BotCommandScopeChat': ChatScope,
         'BotCommandScopeAllPrivateChats': PrivateScope,
-        'ParseMode': SimpleNamespace(HTML='HTML'), 'VERSION':'2.8.0',
+        'ParseMode': SimpleNamespace(HTML='HTML'), 'VERSION':'2.8.1',
         'Update': object, 'Application': object, 'ContextTypes':SimpleNamespace(DEFAULT_TYPE=object),
         'is_admin':lambda update:True,
         'localized_reply':None,
@@ -117,6 +117,12 @@ with tempfile.TemporaryDirectory() as td:
     token=ctx.set('ru')
     text,keyboard=ns['language_view'](True)
     assert 'успешно изменён' in text
+    assert len(keyboard.inline_keyboard) == 2
+    assert [b.callback_data for b in keyboard.inline_keyboard[0]] == [
+        "lang:en", "lang:fa", "lang:ru"
+    ], "Language buttons must share one row, with Persian in the middle"
+    assert len(keyboard.inline_keyboard[1]) == 1
+    assert keyboard.inline_keyboard[1][0].callback_data == "main"
     assert any(b.callback_data=='lang:fa' for row in keyboard.inline_keyboard for b in row)
     assert any(b.callback_data=='lang:en' for row in keyboard.inline_keyboard for b in row)
     assert any(b.callback_data=='lang:ru' for row in keyboard.inline_keyboard for b in row)

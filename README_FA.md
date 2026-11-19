@@ -3,7 +3,7 @@
 <div dir="rtl" align="right">
 
 <h1>☁️ راهنمای نصب و راه‌اندازی Cloudflare Telegram Manager</h1>
-<p><strong>Cloudflare Telegram Manager — نسخه ۲.۸.۰</strong></p>
+<p><strong>Cloudflare Telegram Manager — نسخه ۲.۸.۱</strong></p>
 <p>مرجع کامل نصب روی سرور، ساخت ربات تلگرام، اتصال امن حساب Cloudflare، راهبری سرویس، به‌روزرسانی و رفع خطاهای متداول.</p>
 <p>🌐 <a href="README_EN.md">English documentation</a> | 🏠 <a href="README.md">صفحه اصلی پروژه</a></p>
 

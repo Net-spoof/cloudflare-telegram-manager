@@ -46,7 +46,7 @@ DB_PATH = DATA_DIR / "bot.db"
 FERNET = Fernet(os.environ["ENCRYPTION_KEY"].strip().encode())
 CF_API = "https://api.cloudflare.com/client/v4"
 PAGE_SIZE = 8
-VERSION = "2.8.0"
+VERSION = "2.8.1"
 
 # A language is selected separately by each authorized Telegram user.
 # ContextVar keeps concurrent updates isolated without affecting other admins.
@@ -598,9 +598,14 @@ def language_view(success=False):
         "ru": "✅ Язык бота успешно изменён.\n\n",
     }
     home = {"fa": "🏠 منوی اصلی", "en": "🏠 Main menu", "ru": "🏠 Главное меню"}
-    kb = [[InlineKeyboardButton(("✅ " if lang == code else "") + LANGUAGE_NAMES[code],
-                                callback_data="lang:" + code)] for code in LANGUAGES]
-    kb.append([InlineKeyboardButton(home[lang], callback_data="main")])
+    # Keep all three choices on one row with Persian in the middle.
+    # Explicit layout order is intentional and independent of LANGUAGES.
+    language_buttons = [
+        InlineKeyboardButton(("✅ " if lang == code else "") + LANGUAGE_NAMES[code],
+                             callback_data="lang:" + code)
+        for code in ("en", "fa", "ru")
+    ]
+    kb = [language_buttons, [InlineKeyboardButton(home[lang], callback_data="main")]]
     return (notice[lang] if success else "") + titles[lang], InlineKeyboardMarkup(kb)
 
 

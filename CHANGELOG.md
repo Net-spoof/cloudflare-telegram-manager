@@ -1,8 +1,12 @@
 # Cloudflare Telegram Manager — Current Release
 
-## v2.8.0 · 19 November 2026
+## v2.8.1 · 19 November 2026
 
 **This is the current supported release.** The repository maintains one active release entry; earlier development milestones are available only in Git history.
+
+### Language picker layout
+- Show English, Persian and Russian in a single button row, keeping Persian in the center and Main Menu on its own row.
+- Retain per-user language persistence and translated screens.
 
 ### Multilingual interface
 - Added `/language` and a main-menu language selector with **Persian, English and Russian**.
