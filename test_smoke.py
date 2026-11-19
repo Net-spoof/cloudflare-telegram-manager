@@ -15,7 +15,7 @@ with tempfile.TemporaryDirectory() as td:
     import bot
 
     bot.init_db()
-    assert bot.VERSION == "2.8.0"
+    assert bot.VERSION == "2.8.1"
     assert bot.get_user_language(11) == "fa"
     bot.save_user_language(11, "en")
     assert bot.get_user_language(11) == "en"
@@ -57,6 +57,10 @@ with tempfile.TemporaryDirectory() as td:
         assert fake_bot.published, "User's localized commands were not published"
         assert query.answers
         assert "lang:en" in str(query.edits[-1][1]["reply_markup"].inline_keyboard)
+        buttons = query.edits[-1][1]["reply_markup"].inline_keyboard
+        assert [b.callback_data for b in buttons[0]] == ["lang:en", "lang:fa", "lang:ru"]
+        assert len(buttons) == 2 and len(buttons[1]) == 1
+        assert buttons[1][0].callback_data == "main"
 
         message=Message()
         start_update=SimpleNamespace(
