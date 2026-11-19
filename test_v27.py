@@ -1,0 +1,130 @@
+"""v2.7 offline UI, wizard privacy, pagination and operation-confirmation tests.
+
+Run with: python3 test_v27.py. Does not import Telegram, use secrets or call the network.
+"""
+import ast
+import asyncio
+import base64
+import html
+import re
+from pathlib import Path
+from types import SimpleNamespace
+
+source=Path(__file__).with_name("bot.py").read_text(encoding="utf-8")
+tree=ast.parse(source)
+names={
+    "encode_callback_data", "decode_callback_data", "InlineKeyboardButton",
+    "home_text", "main_kb", "page_navigation", "guide_menu",
+    "account_detail_menu", "accounts_menu", "fetch_all_zones", "list_records",
+    "dnssec_toggle", "callback", "safe_edit", "is_private_chat",
+}
+selected=[n for n in tree.body if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef)) and n.name in names]
+assert len(selected)==len(names)
+created=[]
+class TelegramInlineKeyboardButton:
+    def __init__(self,text,*args,callback_data=None,url=None,**kwargs):
+        self.text,self.callback_data,self.url=text,callback_data,url
+        if callback_data is not None:
+            assert 1<=len(callback_data.encode())<=64,callback_data
+        created.append(self)
+class InlineKeyboardMarkup:
+    def __init__(self,keyboard): self.inline_keyboard=keyboard
+class BadRequest(Exception): pass
+class Query:
+    def __init__(self,data=""):
+        self.data=data; self.answers=[]; self.messages=[]
+    async def answer(self,*args,**kwargs): self.answers.append((args,kwargs))
+    async def edit_message_text(self,text,**kwargs): self.messages.append((text,kwargs))
+
+Z='a'*32
+R='b'*32
+account={"id":1,"label":"آزمایشی <a>","account_id":'f'*32,"active":1,"token_enc":b'fake'}
+commands=[]
+async def cf_request(a,method,path,**kw):
+    commands.append((method,path,kw))
+    if path=="/zones":
+        page=kw['params']['page']
+        return {"result":[{"name":f"domain{page}-{i}.test","id":Z} for i in range(50 if page==1 else 3)],
+                "result_info":{"total_pages":2,"total_count":53}}
+    if '/dns_records' in path:
+        return {"result":[{"id":R} for _ in range(500 if kw['params']['page']==1 else 2)],
+                "result_info":{"total_pages":2,"total_count":502}}
+    if path.endswith('/dnssec'):
+        if method=="PATCH": return {"result":{"status":kw['json_body']['status']}}
+        return {"result":{"status":"active"}}
+    if method in ("POST","PATCH"):
+        return {"result":{}}
+    raise AssertionError((method,path,kw))
+async def fake_zone(zid): return {"name":"example.test","paused":False,"status":"active"}
+async def ignored(*args,**kwargs): return None
+ns={
+    'base64':base64,'re':re,'_CF_HEX_ID':re.compile(r'(?<=:)[0-9a-fA-F]{32}(?=:|$)'),
+    '_SHORT_CF_ID':re.compile(r'^~[A-Za-z0-9_-]{22}$'),
+    'TelegramInlineKeyboardButton':TelegramInlineKeyboardButton,
+    'InlineKeyboardMarkup':InlineKeyboardMarkup,'BadRequest':BadRequest,
+    'VERSION':'2.7.0','Update':object,'ContextTypes':SimpleNamespace(DEFAULT_TYPE=object),
+    'ParseMode':SimpleNamespace(HTML='HTML'),
+    'list_accounts':lambda:[account], 'get_account':lambda aid:account if aid==1 else None,
+    'active_account':lambda:account,'get_zone':fake_zone,
+    'esc':lambda s:html.escape(str(s)), 'short':lambda s,n=38:str(s)[:n],
+    'cf_request':cf_request,'is_admin':lambda update:True,
+    'zone_menu':ignored,'zone_info':ignored,'dns_menu':ignored,'settings_menu':ignored,
+    'cache_menu':ignored,'dnssec_menu':ignored,'zones_menu':ignored,
+    'record_type_menu':ignored,'record_menu':ignored,'toggle_proxy':ignored,
+    'toggle_setting':ignored,'export_dns':ignored,'toggle_zone_pause':ignored,
+    'create_pending_record':ignored,'get_record':ignored,
+    'log':SimpleNamespace(exception=lambda *x,**k:None),
+}
+exec(compile(ast.Module(body=selected,type_ignores=[]),'bot_v27_extract.py','exec'),ns)
+ns.update(show_main=ignored, cancel_kb=ignored, deny=ignored, get_account=lambda aid:account)
+
+async def run():
+    q=Query()
+    assert 'آزمایشی &lt;a&gt;' in ns['home_text'](account)
+    for c in (True,False):
+        kb=ns['main_kb'](c)
+        assert kb.inline_keyboard
+    assert len(ns['page_navigation'](0,3,'zones'))==2
+    assert len(ns['page_navigation'](1,3,f'dns:{Z}'))==3
+    for section in ('start','token','id','finish','errors'):
+        await ns['guide_menu'](q,section)
+        assert 'Cloudflare' in q.messages[-1][0] or section!='start'
+    await ns['accounts_menu'](q)
+    await ns['account_detail_menu'](q,1)
+    assert 'آزمایشی &lt;a&gt;' in q.messages[-1][0]
+    assert len(await ns['fetch_all_zones'](account))==53
+    assert len(await ns['list_records'](Z))==502
+
+    def upd(data,chat_type='private'):
+        return SimpleNamespace(callback_query=Query(data),effective_chat=SimpleNamespace(type=chat_type))
+    def ctx(): return SimpleNamespace(user_data={})
+
+    u=upd('acc:add','group'); context=ctx()
+    await ns['callback'](u,context)
+    assert not context.user_data
+    assert any(item[1].get('show_alert') for item in u.callback_query.answers)
+    u=upd('acc:add'); context=ctx()
+    await ns['callback'](u,context)
+    assert context.user_data['state']=='acc_label'
+    u=upd('guide:token'); context=ctx()
+    await ns['callback'](u,context)
+    assert 'API Token' in u.callback_query.messages[-1][0]
+
+    commands.clear()
+    u=upd(f'purgeall:{Z}'); context=ctx()
+    await ns['callback'](u,context)
+    assert not any(m=='POST' for m,_,__ in commands),'purge before confirmation'
+    u=upd(f'purgeconfirm:{Z}'); context=ctx()
+    await ns['callback'](u,context)
+    assert any(m=='POST' for m,_,__ in commands)
+
+    commands.clear()
+    u=upd(f'dnssectoggle:{Z}'); context=ctx()
+    await ns['callback'](u,context)
+    assert not any(m=='PATCH' for m,_,__ in commands)
+    u=upd(f'dnssecapply:{Z}'); context=ctx()
+    await ns['callback'](u,context)
+    assert any(m=='PATCH' and kw['json_body']['status']=='disabled' for m,_,kw in commands)
+
+asyncio.run(run())
+print(f'PASS: v2.7 menus, escaped account labels, token privacy, pagination and destructive confirmations; {len(created)} buttons valid')
