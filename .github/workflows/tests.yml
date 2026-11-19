@@ -21,3 +21,8 @@ jobs:
           python test_account_commands.py
           python test_command_menu.py
           python test_i18n.py
+          python - <<'PY'
+          from pathlib import Path
+          assert all(p in Path('Dockerfile').read_text() for p in ('i18n.py', 'locales.json'))
+          print('PASS: Docker image includes the localization files')
+          PY
