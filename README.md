@@ -1,19 +1,20 @@
+<p align="center">
+  <img src="assets/banner.svg" alt="Cloudflare Telegram Manager project illustration" width="100%">
+</p>
+
 <div align="center">
 
-# ☁️ Cloudflare Telegram Manager
+# Cloudflare Telegram Manager
 
-**A secure, Persian-first Telegram control panel for Cloudflare accounts, DNS, and zone operations.**
+**A self-hosted Telegram control panel for Cloudflare DNS, zones, and security operations.**
 
-[![Version](https://img.shields.io/badge/version-2.7.0-2563eb)](CHANGELOG.md)
-[![Python](https://img.shields.io/badge/Python-3.12-3776ab?logo=python&logoColor=white)](Dockerfile)
-[![Docker](https://img.shields.io/badge/Docker-Compose-2496ed?logo=docker&logoColor=white)](docker-compose.yml)
-[![Tests](https://github.com/Net-spoof/cloudflare-telegram-manager/actions/workflows/tests.yml/badge.svg)](https://github.com/Net-spoof/cloudflare-telegram-manager/actions/workflows/tests.yml)
+[![Release](https://img.shields.io/badge/release-v2.7.0-F48120?style=flat-square)](CHANGELOG.md)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white)](Dockerfile)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white)](docker-compose.yml)
+[![CI](https://github.com/Net-spoof/cloudflare-telegram-manager/actions/workflows/tests.yml/badge.svg)](https://github.com/Net-spoof/cloudflare-telegram-manager/actions/workflows/tests.yml)
+[![License](https://img.shields.io/badge/license-not%20specified-6B7280?style=flat-square)](#license)
 
-### 🌐 Documentation / مستندات
-
-**[🇮🇷 آموزش کامل فارسی — نصب، اتصال و مدیریت (راست‌چین)](README_FA.md)**
-
-**[🇬🇧 English Guide — Installation, Setup & Operations](README_EN.md)**
+**[🇮🇷 راهنمای فارسی](README_FA.md)** &nbsp;·&nbsp; **[🇬🇧 English documentation](README_EN.md)** &nbsp;·&nbsp; **[📋 Changelog](CHANGELOG.md)**
 
 </div>
 
@@ -21,69 +22,102 @@
 
 ## Overview
 
-Cloudflare Telegram Manager is an **unofficial, self-hosted, administrator-only** Telegram bot. Manage several Cloudflare accounts from a private Telegram chat, inspect zones, work with DNS records, search across zones, review selected SSL/network settings, purge cache, and manage DNSSEC with confirmation prompts.
+**Cloudflare Telegram Manager** brings essential Cloudflare account and zone administration into an administrator-restricted Telegram bot. Built for self-hosting, it provides a streamlined way to inspect zones, manage DNS records, and perform selected security or cache operations without repeatedly opening the Cloudflare dashboard.
 
-### Key capabilities
+The Telegram interface is in Persian. Both Persian and English installation and operations guides are included.
 
-- 🌐 Multi-account Cloudflare support with encrypted API token storage
-- 🧩 DNS record listing, search, create, edit, delete, BIND import/export
-- 🔐 Scoped API tokens, admin allowlist, private-chat credential entry
-- 🛡️ Selected zone settings, SSL/network controls, DNSSEC safeguards
-- 📱 Persian inline-keyboard interface and built-in onboarding guide
-- 🐳 Docker Compose deployment; upgrade preserves <code>.env</code>, the Fernet key and SQLite data
-- ✅ Offline regression tests and GitHub Actions CI
+## Features at a glance
 
-## Quick install — Ubuntu
+| Area | Capabilities |
+|:---|:---|
+| **Cloudflare accounts** | Multiple accounts, active-account selection, connectivity checks, token rotation and disconnection |
+| **DNS management** | List, search, create, edit and delete records; BIND import/export; 21 supported record types |
+| **Zones & settings** | Zone information, selected SSL/TLS, HTTPS and network controls |
+| **Cache & DNSSEC** | Cache purging and DNSSEC controls, with confirmation for high-impact operations |
+| **Access control** | Numeric Telegram administrator allowlist; private-chat credential entry |
+| **Secrets & persistence** | Fernet-encrypted Cloudflare tokens; persistent SQLite data; backups during installation updates |
+| **Operations** | Docker Compose, built-in onboarding, safe diagnostics and offline regression tests |
 
-**Requirements:** a Linux VPS (Ubuntu recommended), root/sudo access, Python 3, Git, outbound HTTPS access to Telegram and Cloudflare, and a Telegram bot token from [@BotFather](https://t.me/BotFather). The installer can install Docker if necessary.
+> Available Cloudflare actions depend on the permissions and zone resources granted to each API token. This tool does not bypass Cloudflare permission checks.
 
-~~~bash
+## Quick start
+
+**Recommended:** Ubuntu VPS with root/sudo access, Python 3, Git and outbound HTTPS. The installer can install Docker/Compose when missing.
+
+```bash
 sudo apt-get update
 sudo apt-get install -y git python3 ca-certificates
 sudo git clone https://github.com/Net-spoof/cloudflare-telegram-manager.git /opt/cloudflare-telegram-manager
 cd /opt/cloudflare-telegram-manager
 sudo bash install.sh
-~~~
+```
 
-The installer prompts for <code>TELEGRAM_BOT_TOKEN</code> and numeric <code>TELEGRAM_ADMIN_IDS</code> on first run, generates an encryption key, then builds and starts the Docker service.
+On first launch, the installer requests your **Telegram Bot Token** and **numeric administrator ID(s)**, creates a private `.env` with a new encryption key, builds the Docker image and starts the service.
 
-~~~bash
+**Verify installation:**
+
+```bash
 cd /opt/cloudflare-telegram-manager
 sudo docker compose ps
 sudo bash diagnose.sh
-~~~
+```
 
-Open your Telegram bot in a **private chat**, send <code>/start</code>, and follow **Cloudflare Accounts → Add account**. Create a **scoped API Token** in [Cloudflare](https://dash.cloudflare.com/profile/api-tokens), not a Global API Key.
+In your Telegram bot's private chat, send `/start` and open **👤 حساب‌های Cloudflare → ➕ افزودن حساب جدید**. Create a scoped API Token from [Cloudflare's API Token dashboard](https://dash.cloudflare.com/profile/api-tokens) and follow the in-bot connection guide.
 
-> **Already installed a previous version?** Don't clone into your existing project folder or replace <code>.env</code>/<code>data/</code>. See the [Persian upgrade instructions](README_FA.md#upgrade) or [English upgrade guide](README_EN.md#upgrading-without-losing-data).
+**Upgrading an existing installation?** Preserve its `.env`, `ENCRYPTION_KEY`, and `data/` directory. See [upgrade instructions](README_EN.md#upgrading-without-losing-data) before pulling or replacing files.
+
+## Architecture
+
+```mermaid
+flowchart LR
+  A["Authorized admin<br/>Telegram chat"] -->|"Telegram Bot API<br/>long polling"| B["Self-hosted bot<br/>Docker Compose"]
+  B -->|"Scoped API Token<br/>HTTPS"| C["Cloudflare API"]
+  B <-->|"SQLite +<br/>encrypted credentials"| D[("Local persistent data")]
+```
+
+The bot uses **long polling**. No public webhook URL or inbound port is required for normal operation. Outbound network access to Telegram and Cloudflare is required.
 
 ## Documentation
 
-| Topic | فارسی (RTL) | English |
-|---|---|---|
-| Requirements & installation | [راهنمای نصب](README_FA.md#install) | [Installation](README_EN.md#installation-on-ubuntu) |
-| Telegram BotFather setup | [ساخت ربات](README_FA.md#botfather) | [Bot setup](README_EN.md#creating-your-telegram-bot) |
-| Cloudflare API Token + Account ID | [اتصال حساب](README_FA.md#cloudflare) | [Cloudflare connection](README_EN.md#connecting-a-cloudflare-account) |
-| Updates, backup and restore | [به‌روزرسانی و بکاپ](README_FA.md#upgrade) | [Upgrade & backups](README_EN.md#upgrading-without-losing-data) |
-| Troubleshooting | [رفع خطا](README_FA.md#troubleshooting) | [Troubleshooting](README_EN.md#troubleshooting) |
+| | فارسی | English |
+|:---|:---|:---|
+| Full installation & configuration | [راهنمای نصب و راه‌اندازی](README_FA.md#install) | [Install and configure](README_EN.md#installation-on-ubuntu) |
+| BotFather & admin access | [ساخت ربات](README_FA.md#botfather) | [Create a bot](README_EN.md#creating-your-telegram-bot) |
+| API Token & Account ID | [اتصال حساب Cloudflare](README_FA.md#cloudflare) | [Connect Cloudflare](README_EN.md#connecting-a-cloudflare-account) |
+| Update and backups | [به‌روزرسانی](README_FA.md#upgrade) | [Upgrade safely](README_EN.md#upgrading-without-losing-data) |
+| Troubleshooting | [رفع خطاها](README_FA.md#troubleshooting) | [Troubleshooting](README_EN.md#troubleshooting) |
 
-## Developer checks
+## Development & verification
 
-~~~bash
+Run local regression tests:
+
+```bash
 python3 test_auth.py
 python3 test_v25.py
 python3 test_v26.py
 python3 test_v27.py
-~~~
+```
 
-These are **offline** tests; a successful run does not verify live Telegram or Cloudflare access.
+These tests run offline; they do not verify a live Telegram session or a real Cloudflare account.
 
-## Important security notes
+## Security considerations
 
-- Do not commit or share <code>.env</code>, <code>data/</code>, <code>backups/</code>, credentials, or unredacted logs.
-- Never expose your Telegram bot token or Cloudflare API token. Restrict Cloudflare token permissions and zone resources to the minimum required.
-- Preserve the original <code>ENCRYPTION_KEY</code> when upgrading: changing it prevents decryption of saved Cloudflare tokens.
-- Destructive changes to DNS and DNSSEC can interrupt production services. Export DNS records before high-impact operations.
-- The project is **not affiliated with Cloudflare or Telegram**, and has not been verified against live Cloudflare accounts in the build environment.
+- **Never commit** `.env`, `data/`, `backups/`, Telegram tokens, Cloudflare tokens, encryption keys or unredacted logs.
+- Prefer **least-privilege Cloudflare API tokens** with access limited to the necessary zones; do not use a Global API Key.
+- Keep the **original `ENCRYPTION_KEY`** when upgrading. Saved token ciphertext cannot be decrypted with a different key.
+- Export DNS records and verify registrar-side DS records before high-impact DNSSEC changes.
+- Treat this as an **unofficial tool**. Its offline build tests do not substitute for a live deployment and permissions review.
 
-[Changelog](CHANGELOG.md) · [Persian guide](README_FA.md) · [English guide](README_EN.md)
+## License
+
+No open-source license has been declared in this repository yet. Unless a license is added, standard copyright restrictions apply. Contributions and reuse should respect the rights of the project owner.
+
+---
+
+<div align="center">
+
+**Built for operators who prefer a lightweight, self-hosted workflow.**
+
+[Get started in Persian](README_FA.md) · [Read the English guide](README_EN.md) · [View changes](CHANGELOG.md)
+
+</div>

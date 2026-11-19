@@ -1,9 +1,10 @@
 <a id="top"></a>
+<p align="center"><img src="assets/banner.svg" alt="Cloudflare Telegram Manager" width="100%"></p>
 <div dir="rtl" align="right">
 
-<h1>☁️ راهنمای کامل نصب و راه‌اندازی ربات مدیریت Cloudflare</h1>
+<h1>☁️ راهنمای نصب و راه‌اندازی Cloudflare Telegram Manager</h1>
 <p><strong>Cloudflare Telegram Manager — نسخه ۲.۷.۰</strong></p>
-<p>راهنمای فارسی، مرحله‌به‌مرحله و راست‌چین برای نصب روی VPS، ساخت ربات تلگرام، اتصال ایمن حساب Cloudflare، مدیریت سرویس، ارتقا و رفع خطا.</p>
+<p>مرجع کامل نصب روی سرور، ساخت ربات تلگرام، اتصال امن حساب Cloudflare، راهبری سرویس، به‌روزرسانی و رفع خطاهای متداول.</p>
 <p>🌐 <a href="README_EN.md">English documentation</a> | 🏠 <a href="README.md">صفحه اصلی پروژه</a></p>
 
 <blockquote><strong>توجه:</strong> این پروژه مستقل و غیررسمی است. برای مدیریت حساب‌های خودتان از آن استفاده کنید. فایل‌های دارای رمز و توکن را در مخزن عمومی یا کانال تلگرام منتشر نکنید.</blockquote>

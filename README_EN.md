@@ -1,8 +1,10 @@
-# ☁️ Cloudflare Telegram Manager — English Setup & Operations Guide
+<p align="center"><img src="assets/banner.svg" alt="Cloudflare Telegram Manager" width="100%"></p>
+
+# Cloudflare Telegram Manager — Installation & Operations
 
 **Version 2.7.0** · Self-hosted · Docker Compose · Administrator-only
 
-[🇮🇷 راهنمای فارسی (RTL)](README_FA.md) · [🏠 Project README](README.md) · [Changelog](CHANGELOG.md)
+[🇮🇷 راهنمای فارسی](README_FA.md) · [🏠 Project README](README.md) · [Changelog](CHANGELOG.md)
 
 > **Unofficial project.** This bot is not endorsed by or affiliated with Cloudflare or Telegram. Use scoped API tokens and only manage accounts and domains you own or are authorized to administer.
 
@@ -224,4 +226,4 @@ These tests validate local behavior without requiring real Telegram or Cloudflar
 
 ---
 
-**Documentation:** [🇮🇷 Persian (RTL)](README_FA.md) · [🏠 README](README.md) · [📋 Changelog](CHANGELOG.md)
+**Documentation:** [🇮🇷 Persian](README_FA.md) · [🏠 README](README.md) · [📋 Changelog](CHANGELOG.md)

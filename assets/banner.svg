@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="560" viewBox="0 0 1400 560" role="img" aria-labelledby="title desc">
+<title id="title">Cloudflare Telegram Manager — Project Banner</title>
+<desc id="desc">Original illustration of a secure Telegram bot connected to Cloudflare zones, DNS, TLS, cache and DNSSEC services.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#071122"/><stop offset=".55" stop-color="#0b1b3b"/><stop offset="1" stop-color="#101b38"/></linearGradient>
+  <linearGradient id="orange" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffb84a"/><stop offset=".62" stop-color="#fa7a1e"/><stop offset="1" stop-color="#f24a2c"/></linearGradient>
+  <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#63e8ff"/><stop offset=".48" stop-color="#1db7fa"/><stop offset="1" stop-color="#1769e6"/></linearGradient>
+  <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#112849"/><stop offset="1" stop-color="#0b162b"/></linearGradient>
+  <radialGradient id="halo"><stop stop-color="#008be7" stop-opacity=".23"/><stop offset="1" stop-color="#008be7" stop-opacity="0"/></radialGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="14"/></filter>
+  <filter id="shadow"><feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#000814" flood-opacity=".6"/></filter>
+  <pattern id="grid" width="46" height="46" patternUnits="userSpaceOnUse"><path d="M46 0H0V46" fill="none" stroke="#214267" stroke-width="1" opacity=".22"/></pattern>
+  <style>
+    .text{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+    .small{font-size:18px;letter-spacing:1.6px;font-weight:650}
+    .label{font-size:14px;font-weight:700;letter-spacing:.5px}
+    .muted{fill:#9fb8d2}.white{fill:#eaf5ff}
+  </style>
+</defs>
+<rect width="1400" height="560" fill="url(#bg)"/>
+<rect width="1400" height="560" fill="url(#grid)"/>
+<circle cx="1050" cy="286" r="360" fill="url(#halo)"/>
+<circle cx="180" cy="490" r="250" fill="url(#halo)" opacity=".65"/>
+<path d="M0 475C270 350 418 640 708 496S1150 390 1400 480" stroke="#168fea" stroke-width="2" opacity=".43" fill="none"/>
+<path d="M0 520C280 388 432 684 722 539S1143 444 1400 530" stroke="#ff943d" stroke-width="2" opacity=".28" fill="none"/>
+<g fill="#53d8ff"><circle cx="48" cy="82" r="2"/><circle cx="355" cy="42" r="2"/><circle cx="698" cy="122" r="2"/><circle cx="1304" cy="32" r="2"/><circle cx="1360" cy="485" r="2"/><circle cx="570" cy="500" r="2"/></g>
+<!-- Brand pictogram -->
+<g transform="translate(88 88)" filter="url(#shadow)">
+  <circle cx="59" cy="60" r="62" fill="#102d57" stroke="#2471b3" stroke-width="2"/>
+  <path d="M26 78c-16 0-25-9-25-22 0-12 10-22 22-22 4-22 23-34 43-34 21 0 37 13 42 31 15 0 27 11 27 24 0 13-11 23-26 23Z" transform="translate(-9 21) scale(.90)" fill="url(#orange)"/>
+  <path d="M36 79 100 45 87 99 66 82 53 91 55 70 100 45" fill="#f6fcff" opacity=".97"/>
+</g>
+<g class="text">
+  <text x="88" y="254" font-size="52" font-weight="800" fill="#ff9b41">CLOUDFLARE</text>
+  <text x="88" y="309" font-size="51" font-weight="800" fill="#f5faff">TELEGRAM MANAGER</text>
+  <text x="90" y="357" fill="#b5c9df" font-size="22">Your Cloudflare control panel, inside Telegram.</text>
+  <g transform="translate(88 395)">
+    <rect width="160" height="42" rx="21" fill="#142e50" stroke="#246fa4"/>
+    <circle cx="22" cy="21" r="6" fill="#3cdaae"/>
+    <text x="36" y="27" font-size="15" font-weight="700" fill="#d4f7ed">Self-hosted</text>
+    <rect x="173" width="190" height="42" rx="21" fill="#142e50" stroke="#246fa4"/>
+    <path d="m192 21 8 8 13-16" fill="none" stroke="#55d8fe" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="222" y="27" font-size="15" font-weight="700" fill="#dcefff">Multi-account</text>
+  </g>
+  <text x="89" y="503" class="small" fill="#7797b8">DNS  •  ZONES  •  TLS  •  CACHE  •  DNSSEC</text>
+</g>
+<!-- Dashboard illustration -->
+<g transform="translate(780 56)" filter="url(#shadow)">
+ <rect width="549" height="443" rx="27" fill="url(#panel)" stroke="#285b89" stroke-width="2"/>
+ <rect width="549" height="70" rx="27" fill="#122b4d"/>
+ <path d="M0 70h549" stroke="#28557c"/>
+ <circle cx="38" cy="35" r="8" fill="#f36f64"/><circle cx="62" cy="35" r="8" fill="#ffc361"/><circle cx="86" cy="35" r="8" fill="#44d5b0"/>
+ <text class="text white" x="120" y="43" font-size="20" font-weight="750">Control Center</text>
+ <rect x="407" y="20" width="117" height="32" rx="16" fill="#0d463e" stroke="#167969"/>
+ <circle cx="424" cy="36" r="5" fill="#4df3c2"/>
+ <text class="text" x="437" y="41" font-size="13" font-weight="700" fill="#a8f4dc">CONNECTED</text>
+ <!-- account card -->
+ <rect x="28" y="94" width="493" height="90" rx="17" fill="#142f51" stroke="#315679"/>
+ <circle cx="66" cy="139" r="25" fill="#163d69" stroke="#4388bc"/>
+ <path d="M49 144c-7 0-10-4-10-10 0-6 5-10 11-10 4-9 11-13 20-13 10 0 17 6 19 14 7 0 13 5 13 11 0 5-4 8-10 8Z" transform="translate(12 5) scale(.75)" fill="url(#orange)"/>
+ <text class="text white" x="108" y="129" font-size="19" font-weight="750">Cloudflare Account</text>
+ <text class="text muted" x="108" y="154" font-size="14">Scoped API token • Encrypted storage</text>
+ <rect x="390" y="119" width="109" height="36" rx="11" fill="#153c60" stroke="#2269a8"/>
+ <text class="text" x="409" y="142" font-size="14" font-weight="700" fill="#9eddfd">ACTIVE</text>
+ <!-- feature cards -->
+ <g class="text">
+  <rect x="28" y="207" width="153" height="111" rx="16" fill="#102a49" stroke="#246c9c"/>
+  <circle cx="57" cy="242" r="12" fill="none" stroke="#36cdff" stroke-width="2.5"/>
+  <path d="M45 242h24M57 230c-10 9-10 15 0 24M57 230c10 9 10 15 0 24" fill="none" stroke="#36cdff" stroke-width="1.8"/>
+  <text class="white" x="44" y="283" font-size="17" font-weight="750">DNS</text>
+  <text class="muted" x="44" y="302" font-size="12">Records &amp; search</text>
+  <rect x="198" y="207" width="153" height="111" rx="16" fill="#102a49" stroke="#246c9c"/>
+  <path d="m224 236 22-13 22 13-22 13Zm0 11 22 13 22-13" fill="none" stroke="#36cdff" stroke-width="2.5" stroke-linejoin="round"/>
+  <text class="white" x="213" y="283" font-size="17" font-weight="750">Zones</text>
+  <text class="muted" x="213" y="302" font-size="12">Multi-account</text>
+  <rect x="368" y="207" width="153" height="111" rx="16" fill="#102a49" stroke="#246c9c"/>
+  <path d="M401 239v-9a13 13 0 0 1 26 0v9m-29 0h32v28h-32Z" fill="none" stroke="#36cdff" stroke-width="2.5" stroke-linejoin="round"/>
+  <text class="white" x="383" y="283" font-size="17" font-weight="750">Security</text>
+  <text class="muted" x="383" y="302" font-size="12">TLS &amp; DNSSEC</text>
+  <!-- controls -->
+  <rect x="28" y="340" width="493" height="76" rx="16" fill="#0b223f" stroke="#214d78"/>
+  <circle cx="58" cy="378" r="17" fill="#173e69"/>
+  <path d="m51 376 7-8 7 8-7 8Z" fill="none" stroke="#5ccfff" stroke-width="2"/>
+  <text class="white" x="89" y="372" font-size="16" font-weight="750">Automation-ready operations</text>
+  <text class="muted" x="89" y="393" font-size="12">Manage • Confirm • Monitor</text>
+  <rect x="398" y="361" width="100" height="33" rx="10" fill="url(#blue)"/>
+  <text x="419" y="383" font-size="14" fill="#051c31" font-weight="800">MANAGE</text>
+ </g>
+</g>
+<path d="M735 280h46" stroke="#37d4ff" stroke-width="3" opacity=".8" stroke-dasharray="5 8"/>
+<circle cx="748" cy="280" r="5" fill="#6be7ff"/>
+</svg>
